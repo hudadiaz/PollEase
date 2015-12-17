@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">PollEase</string>
+
+    <string name="action_new_scan">New scan</string>
+    <string name="title_activity_capture_activity_any_orientation">CaptureActivityAnyOrientation
+    </string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+</resources>
