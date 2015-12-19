@@ -1,5 +1,6 @@
 package com.zaidhuda.pollease;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -7,8 +8,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.SimpleAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -23,20 +22,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
-    private String jsonResult, url;
+    public final String URL = "http://pollease.herokuapp.com/";
+    private String jsonResult, url="http://pollease.herokuapp.com/api/v1/polls/1";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        accessWebService();
     }
 
     @Override
@@ -67,12 +63,17 @@ public class MainActivity extends AppCompatActivity {
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-        if (scanResult != null) {
+        if (scanResult.getContents() != null) {
             String re = scanResult.getContents();
-            Log.d("code", re);
-            url = re;
-            accessWebService();
+            if (valid(re)) {
+                url = re;
+                accessWebService();
+            }
         }
+    }
+
+    public boolean valid(String url) {
+        return url.startsWith(URL);
     }
 
     public void accessWebService() {
@@ -81,6 +82,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private class JsonReadTask extends AsyncTask<String, Void, String> {
+        private ProgressDialog progressDialog;
+
         @Override
         protected String doInBackground(String... params) {
             try {
@@ -109,15 +112,24 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
+        protected void onPreExecute() {
+            progressDialog = ProgressDialog.show(MainActivity.this,"","Retrieving data, please wait",false);
+        }
+
+        @Override
         protected void onPostExecute(String result) {
-            ProcessPoll();
+            if (progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
+            ProcessPollJSON();
         }
     }
 
-    public void ProcessPoll() {
+    public void ProcessPollJSON() {
         Poll poll = null;
         try {
             JSONObject jPoll = new JSONObject(jsonResult);
+            jPoll = jPoll.getJSONObject("poll");
             poll = new Poll(jPoll.getInt("id"));
             poll.setQuestion(jPoll.getString("question"));
             JSONArray choices = jPoll.getJSONArray("choices");
@@ -125,9 +137,12 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject choice = (JSONObject) choices.get(i);
                 Choice c = new Choice(choice.getInt("id"));
                 c.setAnswer(choice.getString("answer"));
-                c.setCount(choice.getInt("count"));
+                c.setVoteCount(choice.getInt("vote_count"));
                 poll.addChoices(c);
             }
+            Intent intent = new Intent(this, PollActivity.class);
+            intent.putExtra("poll", poll);
+            startActivity(intent);
         } catch (JSONException e) {
             Log.d("JSONParse Error ", "Error" + e.toString());
             Toast.makeText(getApplicationContext(), "Error" + e.toString(), Toast.LENGTH_LONG).show();

@@ -1,12 +1,14 @@
 package com.zaidhuda.pollease;
 
+import java.io.Serializable;
+
 /**
  * Created by Zaid on 17/12/2015.
  */
-public class Choice {
+public class Choice implements Serializable {
     private final int ID;
     private String answer;
-    private int count;
+    private int vote_count;
 
     public Choice(int id) {
         ID = id;
@@ -24,11 +26,15 @@ public class Choice {
         this.answer = answer;
     }
 
-    public int getCount() {
-        return count;
+    public int getVoteCount() {
+        return vote_count;
     }
 
-    public void setCount(int count) {
-        this.count = count;
+    public void setVoteCount(int count) {
+        this.vote_count = count;
+    }
+
+    public void addVote() {
+        vote_count++;
     }
 }

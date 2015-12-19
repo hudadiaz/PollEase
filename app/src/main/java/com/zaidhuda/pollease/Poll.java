@@ -1,11 +1,12 @@
 package com.zaidhuda.pollease;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by Zaid on 17/12/2015.
  */
-public class Poll {
+public class Poll implements Serializable {
     private final int ID;
     private String question;
     private ArrayList<Choice> choices;
@@ -38,5 +39,22 @@ public class Poll {
 
     public void addChoices(Choice choice) {
         this.choices.add(choice);
+    }
+
+    public int getVoteCasted() {
+        int votes = 0;
+
+        for (Choice choice : choices){
+            votes += choice.getVoteCount();
+        }
+
+        return votes;
+    }
+
+    public void addVoteTo(int choiceID) {
+        for (Choice choice : choices){
+            if(choice.getID() == choiceID)
+                choice.addVote();
+        }
     }
 }
