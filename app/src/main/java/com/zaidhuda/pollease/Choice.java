@@ -6,16 +6,16 @@ import java.io.Serializable;
  * Created by Zaid on 17/12/2015.
  */
 public class Choice implements Serializable {
-    private final int ID;
+    private final int id;
     private String answer;
     private int vote_count;
 
     public Choice(int id) {
-        ID = id;
+        this.id = id;
     }
 
-    public int getID() {
-        return ID;
+    public int getId() {
+        return id;
     }
 
     public String getAnswer() {

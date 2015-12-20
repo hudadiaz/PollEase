@@ -1,11 +1,8 @@
 package com.zaidhuda.pollease;
 
-import android.app.Activity;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.net.Uri;
-import android.os.Bundle;
 import android.app.Fragment;
+import android.graphics.Color;
+import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
@@ -21,38 +18,38 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.formatter.PercentFormatter;
-import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-public class PollResultFragment extends Fragment {
+public class PollResultPieChartFragment extends Fragment {
     private static final String POLL = "poll";
     private static final String SELECTEDCHOICEID = "selectedChoiceID";
-
-    private int selectedChoiceID;
-    private Poll poll;
+    private static final String PREVIOUSCHOICE = "previousChoice";
     protected List<Integer> colors = Arrays.asList(Color.rgb(236, 64, 122), Color.rgb(92, 107, 192), Color.rgb(38, 198, 218),
             Color.rgb(156, 204, 101), Color.rgb(255, 202, 40), Color.rgb(141, 110, 99),
             Color.rgb(120, 144, 156), Color.rgb(239, 83, 80), Color.rgb(126, 87, 194),
             Color.rgb(41, 182, 246), Color.rgb(102, 187, 106), Color.rgb(255, 238, 88),
             Color.rgb(255, 112, 67), Color.rgb(171, 71, 188), Color.rgb(66, 165, 245),
             Color.rgb(38, 166, 154), Color.rgb(212, 225, 87), Color.rgb(255, 167, 38), Color.rgb(189, 189, 189) );
+    private int selectedChoiceID;
+    private int previousChoice;
+    private Poll poll;
 //    private Typeface tf;
 
-    public static PollResultFragment newInstance(Poll poll, int selectedChoiceID) {
-        PollResultFragment fragment = new PollResultFragment();
+    public PollResultPieChartFragment() {
+        // Required empty public constructor
+    }
+
+    public static PollResultPieChartFragment newInstance(Poll poll, int selectedChoiceID, int previousChoice) {
+        PollResultPieChartFragment fragment = new PollResultPieChartFragment();
         Bundle args = new Bundle();
         args.putSerializable(POLL, poll);
         args.putInt(SELECTEDCHOICEID, selectedChoiceID);
+        args.putInt(PREVIOUSCHOICE, previousChoice);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    public PollResultFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -61,13 +58,15 @@ public class PollResultFragment extends Fragment {
         if (getArguments() != null) {
             poll = (Poll) getArguments().getSerializable(POLL);
             selectedChoiceID = getArguments().getInt(SELECTEDCHOICEID);
-            poll.addVoteTo(selectedChoiceID);
+            previousChoice = getArguments().getInt(PREVIOUSCHOICE);
+
+            poll.updateVoteCount(selectedChoiceID, previousChoice);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_poll_result, container, false);
+        View v = inflater.inflate(R.layout.fragment_poll_result_pie_chart, container, false);
         ((TextView) v.findViewById(R.id.question_TEXT)).setText(poll.getQuestion());
 
         buildPieChart(v);

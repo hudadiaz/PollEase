@@ -7,18 +7,18 @@ import java.util.ArrayList;
  * Created by Zaid on 17/12/2015.
  */
 public class Poll implements Serializable {
-    private final int ID;
+    private final int id;
     private String question;
     private ArrayList<Choice> choices;
 
 
     public Poll(int id) {
-        ID = id;
+        this.id = id;
         choices = new ArrayList<>();
     }
 
-    public int getID() {
-        return ID;
+    public int getId() {
+        return id;
     }
 
     public String getQuestion() {
@@ -51,10 +51,12 @@ public class Poll implements Serializable {
         return votes;
     }
 
-    public void addVoteTo(int choiceID) {
-        for (Choice choice : choices){
-            if(choice.getID() == choiceID)
-                choice.addVote();
+    public void updateVoteCount(int selectedChoiceID, int previousChoice) {
+        for (Choice choice : choices) {
+            if (choice.getId() == selectedChoiceID)
+                choice.setVoteCount(choice.getVoteCount() + 1);
+            if (choice.getId() == previousChoice)
+                choice.setVoteCount(choice.getVoteCount() - 1);
         }
     }
 }

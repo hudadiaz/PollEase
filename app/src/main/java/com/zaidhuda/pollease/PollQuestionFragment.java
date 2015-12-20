@@ -1,46 +1,57 @@
 package com.zaidhuda.pollease;
 
 import android.app.Activity;
-import android.content.Context;
-import android.net.Uri;
-import android.os.Bundle;
 import android.app.Fragment;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link PollQuestionFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link PollQuestionFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+
 public class PollQuestionFragment extends Fragment {
     private static final String POLL = "poll";
+    private static final String USER = "user";
+    private String SELECTION_URL;
 
     private Poll poll;
+    private User user;
     private int selectedChoiceID;
+    private int previousChoice;
     private View view;
 
     private OnFragmentInteractionListener mListener;
 
-    public static PollQuestionFragment newInstance(Poll poll) {
+    public PollQuestionFragment() {
+    }
+
+    public static PollQuestionFragment newInstance(Poll poll, User user) {
         PollQuestionFragment fragment = new PollQuestionFragment();
         Bundle args = new Bundle();
         args.putSerializable(POLL, poll);
+        args.putSerializable(USER, user);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    public PollQuestionFragment() {
     }
 
     @Override
@@ -48,7 +59,9 @@ public class PollQuestionFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             poll = (Poll) getArguments().getSerializable(POLL);
+            user = (User) getArguments().getSerializable(USER);
         }
+        SELECTION_URL = getResources().getString(R.string.selection_url).replace(":poll_id", String.valueOf(poll.getId()));
     }
 
     @Override
@@ -71,7 +84,7 @@ public class PollQuestionFragment extends Fragment {
         RadioGroup rg = new RadioGroup(ctx);
         for(Choice choice : poll.getChoices()) {
             ChoiceRadioButton crb = new ChoiceRadioButton(ctx);
-            crb.setChoiceID(choice.getID());
+            crb.setChoiceID(choice.getId());
             crb.setText(choice.getAnswer());
             crb.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
             rg.addView(crb);
@@ -82,8 +95,6 @@ public class PollQuestionFragment extends Fragment {
                         view.findViewById(R.id.submitChoice_BUTTON).setEnabled(true);
                         selectedChoiceID = ((ChoiceRadioButton) view.findViewById(group.getCheckedRadioButtonId())).getChoiceID();
                     }
-                    Toast.makeText(ctx, "Selected choice is " + selectedChoiceID, Toast.LENGTH_LONG);
-
                 }
             });
         }
@@ -93,9 +104,8 @@ public class PollQuestionFragment extends Fragment {
     }
 
     public void submitChoice() {
-        if (mListener != null) {
-            mListener.submitChoice(selectedChoiceID);
-        }
+        POSTAnswer task = new POSTAnswer();
+        task.execute();
     }
 
     @Override
@@ -114,7 +124,83 @@ public class PollQuestionFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
     public interface OnFragmentInteractionListener {
-        public void submitChoice(int selectedChoiceID);
+        void showResult(int selectedChoiceID, int previousChoice);
+    }
+
+    private class POSTAnswer extends AsyncTask<String, Void, String> {
+        ProgressDialog progressDialog;
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                URL url = new URL(SELECTION_URL.replace(":id", String.valueOf(selectedChoiceID)));
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setReadTimeout(10000);
+                conn.setConnectTimeout(15000);
+                conn.setRequestMethod("PUT");
+                conn.setDoInput(true);
+                conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+
+                JSONObject param = new JSONObject();
+                JSONObject userP = new JSONObject().put("identifier", user.getIdentifier())
+                        .put("token", user.getToken());
+                JSONObject selectionP = new JSONObject().put("choice_id", selectedChoiceID);
+                param.put("poll_id", poll.getId()).put("user", userP).put("selection", selectionP);
+
+                OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                wr.write(param.toString());
+                wr.flush();
+
+                conn.connect();
+                InputStream response = conn.getInputStream();
+                String jsonResult = inputStreamToString(response).toString();
+                JSONObject jsonObject = new JSONObject(jsonResult);
+                previousChoice = jsonObject.getInt("previous_selection");
+                Log.d("previous", String.valueOf(previousChoice));
+            } catch (ProtocolException e) {
+                e.printStackTrace();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        private StringBuilder inputStreamToString(InputStream is) {
+            String rLine = "";
+            StringBuilder answer = new StringBuilder();
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+            try {
+                while ((rLine = rd.readLine()) != null) {
+                    answer.append(rLine);
+                }
+            } catch (IOException e) {
+                Toast.makeText(getActivity().getApplicationContext(), "Error..." + e.toString(), Toast.LENGTH_LONG).show();
+            }
+            return answer;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = ProgressDialog.show(getActivity(), "", "Submitting vote, please wait", false);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if (progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
+            if (mListener != null) {
+                mListener.showResult(selectedChoiceID, previousChoice);
+            }
+        }
     }
 }

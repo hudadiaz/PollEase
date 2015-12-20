@@ -1,14 +1,26 @@
 <resources>
     <string name="app_name">PollEase</string>
 
-    <string name="action_new_scan">New scan</string>
-    <string name="title_activity_capture_activity_any_orientation">CaptureActivityAnyOrientation
-    </string>
+    <string name="polls_url">http://pollease.herokuapp.com/api/v1/polls/</string>
+    <string name="session_url">http://pollease.herokuapp.com/api/v1/sessions</string>
+    <string name="selection_url">http://pollease.herokuapp.com/api/v1/polls/:poll_id/selections/:id</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="title_activity_capture_activity_any_orientation">CaptureActivityAnyOrientation</string>
+    <string name="title_activity_poll_edit">Edit Poll</string>
     <string name="title_activity_poll">Poll</string>
 
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_new_scan">New scan</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_create_poll">Create poll</string>
+
+    <string name="create_poll_title">Create a poll</string>
+    <string name="create_poll_password_info">This password will be required to edit poll. Can be blank.</string>
+
+    <string name="prompt_question">Question</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+
 </resources>

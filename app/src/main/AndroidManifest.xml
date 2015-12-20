@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.zaidhuda.pollease" >
+    package="com.zaidhuda.pollease">
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme.NoActionBar">
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,16 +27,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CaptureActivityAnyOrientation"
-            android:screenOrientation="fullSensor"
-            android:stateNotNeeded="true"
-            android:theme="@style/zxing_CaptureTheme"
-            android:windowSoftInputMode="stateAlwaysHidden" >
-        </activity>
-        <activity
             android:name=".PollActivity"
-            android:label="@string/title_activity_poll" >
-        </activity>
+            android:label="@string/title_activity_poll"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".CaptureActivityAnyOrientation" />
+        <activity
+            android:name=".PollEditActivity"
+            android:label="@string/title_activity_poll_edit"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>
