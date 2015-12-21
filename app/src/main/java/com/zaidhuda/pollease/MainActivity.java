@@ -177,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
                     answer.append(rLine);
                 }
             } catch (IOException e) {
-                Toast.makeText(getApplicationContext(), "Error..." + e.toString(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Error logging in", Toast.LENGTH_LONG).show();
             }
             return answer;
         }
@@ -193,6 +193,7 @@ public class MainActivity extends AppCompatActivity {
                 progressDialog.dismiss();
             }
             ProcessSessionJSON();
+            Toast.makeText(getApplicationContext(), "Logged in", Toast.LENGTH_LONG).show();
         }
     }
 }

@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 
-public class PollEditActivity extends AppCompatActivity implements PollCreateFragment.OnFragmentInteractionListener, PollEditAnswerFragment.OnFragmentInteractionListener {
+public class PollEditActivity extends AppCompatActivity implements PollEditCreateFragment.OnFragmentInteractionListener,
+        PollEditAnswerFragment.OnFragmentInteractionListener, PollEditPasswordFragment.OnFragmentInteractionListener {
     private Poll poll;
     private FragmentManager fragmentManager;
 
@@ -16,14 +18,29 @@ public class PollEditActivity extends AppCompatActivity implements PollCreateFra
         setContentView(R.layout.activity_poll_edit);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        displayPollCreateFragment();
+
+        poll = (Poll) getIntent().getSerializableExtra("poll");
+
+        if (poll != null)
+            displayPollPasswordFragment();
+        else
+            displayPollCreateFragment();
     }
 
     public void displayPollCreateFragment() {
         fragmentManager = getFragmentManager();
-        PollCreateFragment pollCreateFragment = PollCreateFragment.newInstance();
+        PollEditCreateFragment pollEditCreateFragment = PollEditCreateFragment.newInstance();
         fragmentManager.beginTransaction()
-                .replace(R.id.edit_poll_primary_fragment, pollCreateFragment)
+                .replace(R.id.edit_poll_primary_fragment, pollEditCreateFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    private void displayPollPasswordFragment() {
+        fragmentManager = getFragmentManager();
+        PollEditPasswordFragment pollEditPasswordFragment = PollEditPasswordFragment.newInstance(poll);
+        fragmentManager.beginTransaction()
+                .replace(R.id.edit_poll_primary_fragment, pollEditPasswordFragment)
                 .addToBackStack(null)
                 .commit();
     }
@@ -47,5 +64,12 @@ public class PollEditActivity extends AppCompatActivity implements PollCreateFra
     public void done() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onPasswordAccepted(String password) {
+        Log.d("password", password);
+        poll.setPassword(password);
+        displayPollEditFragment(poll);
     }
 }

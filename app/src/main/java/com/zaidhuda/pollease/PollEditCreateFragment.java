@@ -9,18 +9,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-public class PollCreateFragment extends Fragment implements POSTPoll.OnPOSTPollListener {
+public class PollEditCreateFragment extends Fragment implements POSTPoll.OnPOSTPollListener {
     private View view;
     private String question, password;
     private EditText questionET, passwordET;
     private OnFragmentInteractionListener mListener;
     private POSTPoll postPoll;
 
-    public PollCreateFragment() {
+    public PollEditCreateFragment() {
     }
 
-    public static PollCreateFragment newInstance() {
-        return new PollCreateFragment();
+    public static PollEditCreateFragment newInstance() {
+        return new PollEditCreateFragment();
     }
 
     @Override
@@ -32,7 +32,7 @@ public class PollCreateFragment extends Fragment implements POSTPoll.OnPOSTPollL
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.fragment_poll_create, container, false);
+        view = inflater.inflate(R.layout.fragment_poll_edit_create, container, false);
         questionET = (EditText) view.findViewById(R.id.question_editText);
         passwordET = (EditText) view.findViewById(R.id.password_editText);
         view.findViewById(R.id.poll_create_button).setOnClickListener(new View.OnClickListener() {
@@ -83,6 +83,7 @@ public class PollCreateFragment extends Fragment implements POSTPoll.OnPOSTPollL
 
     @Override
     public void onPollCreated(Poll poll) {
+        poll.setPassword(password);
         if (mListener != null)
             mListener.onReceivePoll(poll);
         postPoll.detachListener();

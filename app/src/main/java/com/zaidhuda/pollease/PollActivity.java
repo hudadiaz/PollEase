@@ -57,10 +57,16 @@ public class PollActivity extends AppCompatActivity implements PollQuestionFragm
         } else if (id == R.id.action_pie_chart) {
             displayPieChartFragment();
             return true;
-        } else if (id == R.id.action_bar_chart) {
-            displayBarChartFragment();
+        } else if (id == R.id.action_edit_poll) {
+            Intent intent = new Intent(this, PollEditActivity.class);
+            intent.putExtra("poll", poll);
+            startActivity(intent);
             return true;
         }
+//        else if (id == R.id.action_bar_chart) {
+//            displayBarChartFragment();
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -69,7 +75,7 @@ public class PollActivity extends AppCompatActivity implements PollQuestionFragm
         fragmentManager = getFragmentManager();
         PollQuestionFragment pollQuestion = PollQuestionFragment.newInstance(poll, user);
         fragmentManager.beginTransaction()
-                .replace(R.id.PollPrimaryFragment, pollQuestion)
+                .add(R.id.PollPrimaryFragment, pollQuestion)
                 .addToBackStack(null)
                 .commit();
     }
@@ -100,6 +106,7 @@ public class PollActivity extends AppCompatActivity implements PollQuestionFragm
     @Override
     public void setPoll(Poll poll) {
         this.poll = poll;
+        poll.setUrl(request_url);
         displayPollQuestionFragment();
         pollGetter.detachListener();
     }

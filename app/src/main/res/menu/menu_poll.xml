@@ -10,12 +10,18 @@
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_pie_chart"
+        android:icon="@drawable/ic_assessment_white_48dp"
         android:orderInCategory="100"
-        android:title="@string/pie_chart_name"
-        app:showAsAction="never" />
+        android:title=""
+        app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/action_bar_chart"
+        android:id="@+id/action_edit_poll"
         android:orderInCategory="100"
-        android:title="Bar Chart"
-        app:showAsAction="never" />
+        android:title="Edit poll"
+        app:showAsAction="ifRoom" />
+    <!--<item-->
+    <!--android:id="@+id/action_bar_chart"-->
+    <!--android:orderInCategory="100"-->
+    <!--android:title="Bar Chart"-->
+    <!--app:showAsAction="never" />-->
 </menu>

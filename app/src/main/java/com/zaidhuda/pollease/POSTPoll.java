@@ -83,14 +83,19 @@ public class POSTPoll extends AsyncTask<String, Void, String> {
             poll = new Gson().fromJson(jPoll.getJSONObject("poll").toString(), Poll.class);
         } catch (ProtocolException e) {
             e.printStackTrace();
+            Toast.makeText(activity, "Error submitting poll", Toast.LENGTH_LONG).show();
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            Toast.makeText(activity, "Error submitting poll", Toast.LENGTH_LONG).show();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
+            Toast.makeText(activity, "Error submitting poll", Toast.LENGTH_LONG).show();
         } catch (IOException e) {
             e.printStackTrace();
+            Toast.makeText(activity, "Error submitting poll", Toast.LENGTH_LONG).show();
         } catch (JSONException e) {
             e.printStackTrace();
+            Toast.makeText(activity, "Error submitting poll", Toast.LENGTH_LONG).show();
         }
 
         return null;
@@ -105,7 +110,7 @@ public class POSTPoll extends AsyncTask<String, Void, String> {
                 answer.append(rLine);
             }
         } catch (IOException e) {
-            Toast.makeText(activity, "Error..." + e.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(activity, "Error submitting poll", Toast.LENGTH_LONG).show();
         }
         return answer;
     }
@@ -121,7 +126,7 @@ public class POSTPoll extends AsyncTask<String, Void, String> {
             progressDialog.dismiss();
         }
         onPollCreated();
-        Toast.makeText(activity, "Submitted", Toast.LENGTH_LONG).show();
+        Toast.makeText(activity, "Poll created", Toast.LENGTH_SHORT).show();
     }
 
     public interface OnPOSTPollListener {

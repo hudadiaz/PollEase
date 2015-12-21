@@ -83,14 +83,19 @@ public class POSTSelection extends AsyncTask<String, Void, String> {
             Log.d("previous", String.valueOf(previousChoice));
         } catch (ProtocolException e) {
             e.printStackTrace();
+            Toast.makeText(activity, "Error in submitting vote", Toast.LENGTH_LONG).show();
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            Toast.makeText(activity, "Error in submitting vote", Toast.LENGTH_LONG).show();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
+            Toast.makeText(activity, "Error in submitting vote", Toast.LENGTH_LONG).show();
         } catch (IOException e) {
             e.printStackTrace();
+            Toast.makeText(activity, "Error in submitting vote", Toast.LENGTH_LONG).show();
         } catch (JSONException e) {
             e.printStackTrace();
+            Toast.makeText(activity, "Error in submitting vote", Toast.LENGTH_LONG).show();
         }
 
         return null;
@@ -105,7 +110,7 @@ public class POSTSelection extends AsyncTask<String, Void, String> {
                 answer.append(rLine);
             }
         } catch (IOException e) {
-            Toast.makeText(activity, "Error..." + e.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(activity, "Error in submitting vote", Toast.LENGTH_LONG).show();
         }
         return answer;
     }
@@ -121,6 +126,7 @@ public class POSTSelection extends AsyncTask<String, Void, String> {
             progressDialog.dismiss();
         }
         onSelectionPosted(selectedChoiceID, previousChoice);
+        Toast.makeText(activity, "Answer vote", Toast.LENGTH_SHORT).show();
     }
 
     public interface OnPOSTSelectionListener {

@@ -38,6 +38,7 @@ public class POSTChoice extends AsyncTask<String, Void, String> {
     public POSTChoice(Poll poll, String choice, Fragment fragment) {
         this.activity = fragment.getActivity();
         this.answer = choice;
+        this.poll = poll;
         activity = fragment.getActivity();
         choiceUrl = activity.getResources().getString(R.string.choices_url).replace(":poll_id", String.valueOf(poll.getId()));
         this.execute(choiceUrl);
@@ -67,6 +68,7 @@ public class POSTChoice extends AsyncTask<String, Void, String> {
             JSONObject param = new JSONObject();
             JSONObject choiceP = new JSONObject().put("answer", answer);
             param.put("choice", choiceP);
+            param.put("password", poll.getPassword());
 
             OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
             wr.write(param.toString());
@@ -79,14 +81,19 @@ public class POSTChoice extends AsyncTask<String, Void, String> {
             choice = new Gson().fromJson(jChoice.getJSONObject("choice").toString(), Choice.class);
         } catch (ProtocolException e) {
             e.printStackTrace();
+            Toast.makeText(activity, "Error submitting answer", Toast.LENGTH_LONG).show();
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            Toast.makeText(activity, "Error submitting answer", Toast.LENGTH_LONG).show();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
+            Toast.makeText(activity, "Error submitting answer", Toast.LENGTH_LONG).show();
         } catch (IOException e) {
             e.printStackTrace();
+            Toast.makeText(activity, "Error submitting answer", Toast.LENGTH_LONG).show();
         } catch (JSONException e) {
             e.printStackTrace();
+            Toast.makeText(activity, "Error submitting answer", Toast.LENGTH_LONG).show();
         }
 
         return null;
@@ -101,7 +108,7 @@ public class POSTChoice extends AsyncTask<String, Void, String> {
                 answer.append(rLine);
             }
         } catch (IOException e) {
-            Toast.makeText(activity, "Error..." + e.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(activity, "Error submitting answer", Toast.LENGTH_LONG).show();
         }
         return answer;
     }
@@ -117,7 +124,7 @@ public class POSTChoice extends AsyncTask<String, Void, String> {
             progressDialog.dismiss();
         }
         onCreateAnswer(choice);
-        Toast.makeText(activity, "Submitted", Toast.LENGTH_LONG).show();
+        Toast.makeText(activity, "Choice added", Toast.LENGTH_SHORT).show();
     }
 
     public interface OnPOSTChoiceListener {

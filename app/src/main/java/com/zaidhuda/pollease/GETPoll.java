@@ -24,7 +24,7 @@ import java.net.URL;
  * Created by Zaid on 20/12/2015.
  */
 public class GETPoll extends AsyncTask<String, Void, String> {
-    private Activity ACTIVITY;
+    private Activity activity;
     private String POLLS_URL;
     private String requestUrl;
     private String jsonResult;
@@ -35,7 +35,7 @@ public class GETPoll extends AsyncTask<String, Void, String> {
 
     public GETPoll(String polls_url, String requestUrl, Activity activity) {
         POLLS_URL = polls_url;
-        ACTIVITY = activity;
+        this.activity = activity;
         this.requestUrl = requestUrl;
         this.execute(requestUrl);
         mListener = (OnGETPollListener) activity;
@@ -59,12 +59,16 @@ public class GETPoll extends AsyncTask<String, Void, String> {
             jsonResult = inputStreamToString(response).toString();
         } catch (ProtocolException e) {
             e.printStackTrace();
+            Toast.makeText(activity, "Error in retrieving poll", Toast.LENGTH_LONG).show();
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            Toast.makeText(activity, "Error in retrieving poll", Toast.LENGTH_LONG).show();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
+            Toast.makeText(activity, "Error in retrieving poll", Toast.LENGTH_LONG).show();
         } catch (IOException e) {
             e.printStackTrace();
+            Toast.makeText(activity, "Error in retrieving poll", Toast.LENGTH_LONG).show();
         }
         return null;
     }
@@ -78,14 +82,14 @@ public class GETPoll extends AsyncTask<String, Void, String> {
                 answer.append(rLine);
             }
         } catch (IOException e) {
-            Toast.makeText(ACTIVITY, "Error..." + e.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(activity, "Error in retrieving poll", Toast.LENGTH_LONG).show();
         }
         return answer;
     }
 
     @Override
     protected void onPreExecute() {
-        progressDialog = ProgressDialog.show(ACTIVITY, "", "Retrieving data, please wait", false);
+        progressDialog = ProgressDialog.show(activity, "", "Retrieving data, please wait", false);
     }
 
     @Override
@@ -102,9 +106,10 @@ public class GETPoll extends AsyncTask<String, Void, String> {
         try {
             JSONObject jPoll = new JSONObject(jsonResult);
             setPoll(new Gson().fromJson(jPoll.getJSONObject("poll").toString(), Poll.class));
+            Toast.makeText(activity, "Poll retrieved", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             Log.d("JSONParse Error ", "Error" + e.toString());
-            Toast.makeText(ACTIVITY, "Error" + e.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(activity, "Error in retrieving poll", Toast.LENGTH_LONG).show();
         }
     }
 

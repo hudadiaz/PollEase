@@ -8,7 +8,7 @@ import java.util.ArrayList;
  */
 public class Poll implements Serializable {
     private final int id;
-    private String question;
+    private String question, password, url;
     private ArrayList<Choice> choices;
 
 
@@ -58,5 +58,21 @@ public class Poll implements Serializable {
             if (choice.getId() == previousChoice)
                 choice.setVoteCount(choice.getVoteCount() - 1);
         }
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

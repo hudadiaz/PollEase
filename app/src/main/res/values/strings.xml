@@ -6,6 +6,7 @@
     <string name="session_url">http://pollease.herokuapp.com/api/v1/sessions</string>
     <string name="selection_url">http://pollease.herokuapp.com/api/v1/polls/:poll_id/selections/:id</string>
     <string name="choices_url">http://pollease.herokuapp.com/api/v1/polls/:poll_id/choices</string>
+    <string name="authorize_url">http://pollease.herokuapp.com/api/v1/polls/:poll_id/authorize</string>
 
     <string name="title_activity_capture_activity_any_orientation">CaptureActivityAnyOrientation</string>
     <string name="title_activity_poll_edit">Edit Poll</string>
@@ -31,5 +32,7 @@
     <string name="pie_chart_name">Pie Chart</string>
     <string name="prompt_answer">Add choice</string>
     <string name="action_create_answer">Add answer</string>
+    <string name="action_edit_poll">Edit Poll</string>
+    <string name="create_poll_password_required_info">This password is set on poll creation. Might be blank.</string>
 
 </resources>
