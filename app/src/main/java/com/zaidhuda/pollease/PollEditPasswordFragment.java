@@ -138,7 +138,6 @@ public class PollEditPasswordFragment extends Fragment {
                 conn.connect();
 
                 responseCode = conn.getResponseCode();
-                System.out.println(responseCode);
             } catch (ProtocolException e) {
                 e.printStackTrace();
                 Toast.makeText(getActivity(), "Error in submitting password", Toast.LENGTH_LONG).show();

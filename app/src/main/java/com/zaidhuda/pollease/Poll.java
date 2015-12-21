@@ -41,6 +41,14 @@ public class Poll implements Serializable {
         this.choices.add(choice);
     }
 
+    public void removeChoice(int choiceId) {
+        for (Choice choice : choices)
+            if (choice.getId() == choiceId) {
+                choices.remove(choice);
+                break;
+            }
+    }
+
     public int getVoteCasted() {
         int votes = 0;
 

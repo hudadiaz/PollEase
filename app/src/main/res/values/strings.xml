@@ -6,6 +6,7 @@
     <string name="session_url">http://pollease.herokuapp.com/api/v1/sessions</string>
     <string name="selection_url">http://pollease.herokuapp.com/api/v1/polls/:poll_id/selections/:id</string>
     <string name="choices_url">http://pollease.herokuapp.com/api/v1/polls/:poll_id/choices</string>
+    <string name="delete_choice_url">http://pollease.herokuapp.com/api/v1/polls/:poll_id/choices/:choice_id</string>
     <string name="authorize_url">http://pollease.herokuapp.com/api/v1/polls/:poll_id/authorize</string>
 
     <string name="title_activity_capture_activity_any_orientation">CaptureActivityAnyOrientation</string>
