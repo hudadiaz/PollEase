@@ -4,6 +4,7 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -21,6 +22,8 @@ public class PollActivity extends AppCompatActivity implements PollQuestionFragm
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_poll);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         POLLS_URL = getResources().getString(R.string.polls_url);
         request_url = getIntent().getStringExtra("poll_url");
@@ -30,8 +33,7 @@ public class PollActivity extends AppCompatActivity implements PollQuestionFragm
     }
 
     public void retrievePoll() {
-        pollGetter = GETPoll.getInstance();
-        pollGetter.get(POLLS_URL, request_url, this);
+        pollGetter = new GETPoll(POLLS_URL, request_url, this);
     }
 
     @Override

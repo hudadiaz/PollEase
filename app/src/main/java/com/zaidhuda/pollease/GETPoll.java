@@ -24,7 +24,6 @@ import java.net.URL;
  * Created by Zaid on 20/12/2015.
  */
 public class GETPoll extends AsyncTask<String, Void, String> {
-    private static GETPoll self = new GETPoll();
     private Activity ACTIVITY;
     private String POLLS_URL;
     private String requestUrl;
@@ -33,24 +32,18 @@ public class GETPoll extends AsyncTask<String, Void, String> {
     private ProgressDialog progressDialog;
     private OnGETPollListener mListener;
 
-    private GETPoll() {
-    }
 
-    public static GETPoll getInstance() {
-        return self;
-    }
-
-    private void setPoll(Poll poll) {
-        this.poll = poll;
-        mListener.setPoll(poll);
-    }
-
-    public void get(String polls_url, String requestUrl, Activity activity) {
+    public GETPoll(String polls_url, String requestUrl, Activity activity) {
         POLLS_URL = polls_url;
         ACTIVITY = activity;
         this.requestUrl = requestUrl;
         this.execute(requestUrl);
         mListener = (OnGETPollListener) activity;
+    }
+
+    private void setPoll(Poll poll) {
+        this.poll = poll;
+        mListener.setPoll(poll);
     }
 
     public void detachListener() {

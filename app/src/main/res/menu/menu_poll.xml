@@ -4,13 +4,14 @@
     tools:context="com.zaidhuda.pollease.PollActivity">
     <item
         android:id="@+id/action_refresh"
+        android:icon="@drawable/ic_refresh_white_48dp"
         android:orderInCategory="100"
-        android:title="Refresh"
+        android:title=""
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_pie_chart"
         android:orderInCategory="100"
-        android:title="Pie Chart"
+        android:title="@string/pie_chart_name"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_bar_chart"

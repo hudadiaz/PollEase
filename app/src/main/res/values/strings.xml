@@ -1,9 +1,11 @@
 <resources>
     <string name="app_name">PollEase</string>
 
+    <string name="base_url">http://pollease.herokuapp.com/api/v1/</string>
     <string name="polls_url">http://pollease.herokuapp.com/api/v1/polls/</string>
     <string name="session_url">http://pollease.herokuapp.com/api/v1/sessions</string>
     <string name="selection_url">http://pollease.herokuapp.com/api/v1/polls/:poll_id/selections/:id</string>
+    <string name="choices_url">http://pollease.herokuapp.com/api/v1/polls/:poll_id/choices</string>
 
     <string name="title_activity_capture_activity_any_orientation">CaptureActivityAnyOrientation</string>
     <string name="title_activity_poll_edit">Edit Poll</string>
@@ -22,5 +24,12 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="submit_vote">Vote</string>
+    <string name="poll_question_filler">Poll question</string>
+    <string name="pie_chart_name">Pie Chart</string>
+    <string name="prompt_answer">Add choice</string>
+    <string name="action_create_answer">Add answer</string>
 
 </resources>
