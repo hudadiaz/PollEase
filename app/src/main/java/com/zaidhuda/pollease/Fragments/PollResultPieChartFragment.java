@@ -1,4 +1,4 @@
-package com.zaidhuda.pollease.Fragments;
+package com.zaidhuda.pollease.fragments;
 
 import android.app.Fragment;
 import android.graphics.Color;
@@ -18,9 +18,9 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.formatter.PercentFormatter;
-import com.zaidhuda.pollease.Objects.Choice;
-import com.zaidhuda.pollease.Objects.Poll;
 import com.zaidhuda.pollease.R;
+import com.zaidhuda.pollease.objects.Choice;
+import com.zaidhuda.pollease.objects.Poll;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -1,4 +1,4 @@
-package com.zaidhuda.pollease.Objects;
+package com.zaidhuda.pollease.constants;
 
 /**
  * Created by Zaid on 22/12/2015.

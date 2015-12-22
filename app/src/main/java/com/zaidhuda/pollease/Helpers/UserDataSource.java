@@ -1,4 +1,4 @@
-package com.zaidhuda.pollease.Helpers;
+package com.zaidhuda.pollease.helpers;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -6,8 +6,8 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.zaidhuda.pollease.Objects.DBConstUser;
-import com.zaidhuda.pollease.Objects.User;
+import com.zaidhuda.pollease.constants.DBConstUser;
+import com.zaidhuda.pollease.objects.User;
 
 /**
  * Created by Zaid on 22/12/2015.

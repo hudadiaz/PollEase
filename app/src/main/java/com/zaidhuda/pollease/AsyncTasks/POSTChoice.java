@@ -7,9 +7,9 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.zaidhuda.pollease.Objects.Choice;
-import com.zaidhuda.pollease.Objects.Poll;
 import com.zaidhuda.pollease.R;
+import com.zaidhuda.pollease.objects.Choice;
+import com.zaidhuda.pollease.objects.Poll;
 
 import org.json.JSONException;
 import org.json.JSONObject;

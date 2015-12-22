@@ -1,23 +1,30 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".Activities.PollActivity">
+    tools:context=".activities.PollActivity">
     <item
         android:id="@+id/action_refresh"
         android:icon="@drawable/ic_refresh_white_48dp"
         android:orderInCategory="100"
-        android:title=""
+        android:title="@string/refresh_text"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_pie_chart"
         android:icon="@drawable/ic_assessment_white_48dp"
         android:orderInCategory="100"
-        android:title=""
+        android:title="@string/pie_chart_text"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_share_poll"
+        android:icon="@drawable/ic_send_white_48dp"
+        android:orderInCategory="100"
+        android:title="@string/share_poll_text"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_edit_poll"
+        android:icon="@drawable/ic_mode_edit_white_48dp"
         android:orderInCategory="100"
-        android:title="Edit poll"
+        android:title="@string/edit_poll_text"
         app:showAsAction="ifRoom" />
     <!--<item-->
     <!--android:id="@+id/action_bar_chart"-->

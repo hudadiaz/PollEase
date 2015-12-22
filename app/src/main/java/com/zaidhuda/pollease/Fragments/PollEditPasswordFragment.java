@@ -1,4 +1,4 @@
-package com.zaidhuda.pollease.Fragments;
+package com.zaidhuda.pollease.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -16,8 +16,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.zaidhuda.pollease.Objects.Poll;
 import com.zaidhuda.pollease.R;
+import com.zaidhuda.pollease.objects.Poll;
 
 import org.json.JSONException;
 import org.json.JSONObject;

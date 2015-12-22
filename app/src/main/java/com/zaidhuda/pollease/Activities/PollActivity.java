@@ -1,4 +1,4 @@
-package com.zaidhuda.pollease.Activities;
+package com.zaidhuda.pollease.activities;
 
 import android.app.FragmentManager;
 import android.content.Intent;
@@ -9,11 +9,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.zaidhuda.pollease.AsyncTasks.GETPoll;
-import com.zaidhuda.pollease.Fragments.PollQuestionFragment;
-import com.zaidhuda.pollease.Fragments.PollResultPieChartFragment;
-import com.zaidhuda.pollease.Objects.Poll;
-import com.zaidhuda.pollease.Objects.User;
 import com.zaidhuda.pollease.R;
+import com.zaidhuda.pollease.fragments.PollQuestionFragment;
+import com.zaidhuda.pollease.fragments.PollResultPieChartFragment;
+import com.zaidhuda.pollease.objects.Poll;
+import com.zaidhuda.pollease.objects.User;
 
 public class PollActivity extends AppCompatActivity implements PollQuestionFragment.OnFragmentInteractionListener, GETPoll.OnGETPollListener {
     private String POLLS_URL;
@@ -40,7 +40,7 @@ public class PollActivity extends AppCompatActivity implements PollQuestionFragm
     }
 
     public void retrievePoll() {
-        pollGetter = new GETPoll(POLLS_URL, request_url, this);
+        pollGetter = new GETPoll(request_url, this);
     }
 
     @Override
@@ -70,6 +70,13 @@ public class PollActivity extends AppCompatActivity implements PollQuestionFragm
             intent.putExtra("poll", poll);
             startActivity(intent);
             return true;
+        }
+        else if (id == R.id.action_share_poll) {
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, poll.getQuestion() + "\n\n" + poll.getUrl());
+            sendIntent.setType("text/plain");
+            startActivity(sendIntent);
         }
 //        else if (id == R.id.action_bar_chart) {
 //            displayBarChartFragment();
@@ -112,7 +119,7 @@ public class PollActivity extends AppCompatActivity implements PollQuestionFragm
     }
 
     @Override
-    public void setPoll(Poll poll) {
+    public void onPollRetrieve(Poll poll) {
         this.poll = poll;
         setTitle(poll.getPollName());
         poll.setUrl(request_url);

@@ -3,12 +3,14 @@ package com.zaidhuda.pollease.AsyncTasks;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.database.SQLException;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.zaidhuda.pollease.Objects.Poll;
 import com.zaidhuda.pollease.R;
+import com.zaidhuda.pollease.helpers.PollDataSource;
+import com.zaidhuda.pollease.objects.Poll;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,6 +39,7 @@ public class POSTPoll extends AsyncTask<String, Void, String> {
     private ProgressDialog progressDialog;
     private OnPOSTPollListener mListener;
     private int responseCode;
+    private PollDataSource pollDataSource;
 
     public POSTPoll(String question, String password, Fragment fragment) {
         this.activity = fragment.getActivity();
@@ -44,12 +47,21 @@ public class POSTPoll extends AsyncTask<String, Void, String> {
         this.password = password;
         activity = fragment.getActivity();
         createUrl = activity.getResources().getString(R.string.polls_url);
+        pollDataSource = new PollDataSource(activity);
         this.execute(createUrl);
-
         mListener = (OnPOSTPollListener) fragment;
     }
 
     private void onPollCreated() {
+        poll.setUrl(createUrl + poll.getId());
+        pollDataSource.open();
+        try {
+            pollDataSource.createPoll(poll);
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        pollDataSource.close();
+
         if (mListener != null)
             mListener.onPollCreated(poll);
     }

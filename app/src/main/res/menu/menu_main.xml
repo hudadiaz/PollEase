@@ -1,11 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".Activities.MainActivity">
+    tools:context=".activities.MainActivity">
     <item
         android:id="@+id/action_new_scan"
         android:icon="@drawable/ic_gradient_white_48dp"
         android:orderInCategory="100"
-        android:title=""
-        app:showAsAction="always" />
+        android:title="@string/scan_qr_text"
+        app:showAsAction="ifRoom" />
 </menu>

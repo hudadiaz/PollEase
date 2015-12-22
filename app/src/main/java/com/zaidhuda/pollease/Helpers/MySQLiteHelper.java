@@ -1,12 +1,12 @@
-package com.zaidhuda.pollease.Helpers;
+package com.zaidhuda.pollease.helpers;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.zaidhuda.pollease.Objects.DBConstPoll;
-import com.zaidhuda.pollease.Objects.DBConstUser;
+import com.zaidhuda.pollease.constants.DBConstPoll;
+import com.zaidhuda.pollease.constants.DBConstUser;
 
 /**
  * Created by Zaid on 22/12/2015.
@@ -27,7 +27,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
             + DBConstPoll.COLUMN_ID + " integer primary key, "
             + DBConstPoll.COLUMN_URL + " text not null, "
             + DBConstPoll.COLUMN_QUESTION + " text not null, "
-            + DBConstPoll.COLUMN_PASSWORD + " text)";
+            + DBConstPoll.COLUMN_PASSWORD + " text, "
+            + DBConstPoll.COLUMN_TIME_ADDED + " bigint unsigned)";
 
     public MySQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

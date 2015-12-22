@@ -1,4 +1,4 @@
-package com.zaidhuda.pollease.Activities;
+package com.zaidhuda.pollease.activities;
 
 import android.app.FragmentManager;
 import android.content.Intent;
@@ -7,11 +7,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
-import com.zaidhuda.pollease.Fragments.PollEditAnswerFragment;
-import com.zaidhuda.pollease.Fragments.PollEditCreateFragment;
-import com.zaidhuda.pollease.Fragments.PollEditPasswordFragment;
-import com.zaidhuda.pollease.Objects.Poll;
 import com.zaidhuda.pollease.R;
+import com.zaidhuda.pollease.fragments.PollEditAnswerFragment;
+import com.zaidhuda.pollease.fragments.PollEditCreateFragment;
+import com.zaidhuda.pollease.fragments.PollEditPasswordFragment;
+import com.zaidhuda.pollease.objects.Poll;
 
 public class PollEditActivity extends AppCompatActivity implements PollEditCreateFragment.OnFragmentInteractionListener,
         PollEditAnswerFragment.OnFragmentInteractionListener, PollEditPasswordFragment.OnFragmentInteractionListener {

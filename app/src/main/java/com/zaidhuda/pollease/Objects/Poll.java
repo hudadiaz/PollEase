@@ -1,4 +1,4 @@
-package com.zaidhuda.pollease.Objects;
+package com.zaidhuda.pollease.objects;
 
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -1,10 +1,11 @@
-package com.zaidhuda.pollease.Fragments;
+package com.zaidhuda.pollease.fragments;
 
 
 import android.app.Activity;
 import android.app.ListFragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -24,9 +25,9 @@ import android.widget.TextView;
 
 import com.zaidhuda.pollease.AsyncTasks.DELETEAnswer;
 import com.zaidhuda.pollease.AsyncTasks.POSTChoice;
-import com.zaidhuda.pollease.Objects.Choice;
-import com.zaidhuda.pollease.Objects.Poll;
 import com.zaidhuda.pollease.R;
+import com.zaidhuda.pollease.objects.Choice;
+import com.zaidhuda.pollease.objects.Poll;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -131,6 +132,13 @@ public class PollEditAnswerFragment extends ListFragment implements POSTChoice.O
 
         if (id == R.id.go_to_main) {
             getActivity().finish();
+        }
+        else if (id == R.id.action_share_poll) {
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, poll.getQuestion()+"\n\n"+poll.getUrl());
+            sendIntent.setType("text/plain");
+            startActivity(sendIntent);
         }
 
         return super.onOptionsItemSelected(item);

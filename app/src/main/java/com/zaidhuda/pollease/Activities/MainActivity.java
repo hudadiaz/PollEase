@@ -1,26 +1,33 @@
-package com.zaidhuda.pollease.Activities;
+package com.zaidhuda.pollease.activities;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.zaidhuda.pollease.Helpers.UserDataSource;
-import com.zaidhuda.pollease.Objects.User;
 import com.zaidhuda.pollease.R;
+import com.zaidhuda.pollease.custom.views.PollListView;
+import com.zaidhuda.pollease.helpers.PollDataSource;
+import com.zaidhuda.pollease.helpers.UserDataSource;
+import com.zaidhuda.pollease.objects.Poll;
+import com.zaidhuda.pollease.objects.User;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,6 +42,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private User user;
@@ -43,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
     private String jsonResult, request_url = "";
     private int responseCode;
     private UserDataSource userDataSource;
+    private PollDataSource pollDataSource;
+    private List<Poll> polls;
+    private ListView pollList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +72,23 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        pollList = (ListView) findViewById(R.id.poll_list);
 
+        initializeUser();
+
+        handleIntentFilter();
+
+        populatePollList(pollList);
+    }
+
+    private void handleIntentFilter() {
+        Uri data = getIntent().getData();
+        if (data != null && data.toString().startsWith(POLLS_URL))
+            startPollActivity(data.toString());
+
+    }
+
+    private void initializeUser() {
         userDataSource = new UserDataSource(this);
         userDataSource.open();
         user = userDataSource.getUser();
@@ -70,12 +97,61 @@ public class MainActivity extends AppCompatActivity {
             user = new User(Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
             registerSession();
         }
+    }
 
-        ((TextView) findViewById(R.id.user_identifier)).setText(user.getToken());
+    private void populatePollList(final ListView pollList) {
+        pollDataSource = new PollDataSource(this);
+        pollDataSource.open();
+        polls = pollDataSource.getAllPolls();
 
-        Uri data = getIntent().getData();
-        if (data != null && data.toString().startsWith(POLLS_URL))
-            startPollActivity(data.toString());
+        PollListView pollListView = new PollListView(this, polls);
+        pollList.setAdapter(pollListView);
+        pollList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        });
+
+        pollList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            public boolean onItemLongClick(AdapterView<?> arg0, View v, int index, long arg3) {
+                final Poll selectedPoll = polls.get(index);
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Remove Poll")
+                        .setMessage("Do you really want to remove\n\n" + selectedPoll.getQuestion() + "\n\nfrom the list? This action is irreversible.")
+                        .setIcon(ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_warning_black_48dp))
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                removePoll(selectedPoll);
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, null).show();
+                return true;
+            }
+        });
+
+        pollList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                startPollActivity(polls.get(position).getUrl());
+            }
+        });
+    }
+
+    private void removePoll(Poll poll) {
+        pollDataSource.open();
+        pollDataSource.deletePoll(poll);
+        populatePollList(pollList);
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Delete Vote")
+                .setMessage(poll.getQuestion() + "\n\nDo you want to delete your vote from this poll? This action is irreversible.")
+                .setIcon(ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_warning_black_48dp))
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+//                        removeVoteFromPoll(selectedPoll);
+                    }
+                })
+                .setNegativeButton(android.R.string.no, null).show();
     }
 
     @Override
@@ -112,19 +188,22 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+        populatePollList(pollList);
         userDataSource.open();
+        pollDataSource.open();
         super.onResume();
     }
 
     @Override
     protected void onPause() {
         userDataSource.close();
+        pollDataSource.close();
         super.onPause();
     }
 
-    private void startPollActivity(String re) {
+    private void startPollActivity(String request_url) {
         Intent intent = new Intent(this, PollActivity.class);
-        intent.putExtra("poll_url", re);
+        intent.putExtra("poll_url", request_url);
         intent.putExtra("user", user);
         startActivity(intent);
     }

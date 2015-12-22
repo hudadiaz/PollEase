@@ -2,11 +2,14 @@ package com.zaidhuda.pollease.AsyncTasks;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.database.SQLException;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.zaidhuda.pollease.Objects.Poll;
+import com.zaidhuda.pollease.R;
+import com.zaidhuda.pollease.helpers.PollDataSource;
+import com.zaidhuda.pollease.objects.Poll;
 
 import org.json.JSONObject;
 
@@ -32,19 +35,29 @@ public class GETPoll extends AsyncTask<String, Void, String> {
     private ProgressDialog progressDialog;
     private OnGETPollListener mListener;
     private int responseCode;
+    private PollDataSource pollDataSource;
 
 
-    public GETPoll(String polls_url, String requestUrl, Activity activity) {
-        POLLS_URL = polls_url;
+    public GETPoll(String requestUrl, Activity activity) {
+        POLLS_URL = activity.getResources().getString(R.string.polls_url);
         this.activity = activity;
         this.requestUrl = requestUrl;
+        pollDataSource = new PollDataSource(activity);
         this.execute(requestUrl);
         mListener = (OnGETPollListener) activity;
     }
 
-    private void setPoll(Poll poll) {
+    private void onPollRetrieve(Poll poll) {
         this.poll = poll;
-        mListener.setPoll(poll);
+        this.poll.setUrl(requestUrl);
+        pollDataSource.open();
+        try {
+            pollDataSource.createPoll(this.poll);
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        pollDataSource.close();
+        mListener.onPollRetrieve(this.poll);
     }
 
     public void detachListener() {
@@ -107,7 +120,8 @@ public class GETPoll extends AsyncTask<String, Void, String> {
     public void ProcessPollJSON() {
         try {
             JSONObject jPoll = new JSONObject(jsonResult);
-            setPoll(new Gson().fromJson(jPoll.toString(), Poll.class));
+            poll = new Gson().fromJson(jPoll.toString(), Poll.class);
+            onPollRetrieve(poll);
             Toast.makeText(activity, "Poll retrieved", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             showErrorToast("Error retrieving poll");
@@ -123,6 +137,6 @@ public class GETPoll extends AsyncTask<String, Void, String> {
     }
 
     public interface OnGETPollListener {
-        void setPoll(Poll poll);
+        void onPollRetrieve(Poll poll);
     }
 }

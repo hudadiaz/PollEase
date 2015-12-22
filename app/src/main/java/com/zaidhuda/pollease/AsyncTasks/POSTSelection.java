@@ -7,9 +7,9 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.zaidhuda.pollease.Objects.Poll;
-import com.zaidhuda.pollease.Objects.User;
 import com.zaidhuda.pollease.R;
+import com.zaidhuda.pollease.objects.Poll;
+import com.zaidhuda.pollease.objects.User;
 
 import org.json.JSONException;
 import org.json.JSONObject;

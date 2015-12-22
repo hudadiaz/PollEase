@@ -40,5 +40,12 @@
     <string name="verify_password_title">Verify password</string>
     <string name="poll_edit_answers_title">Edit poll answer</string>
     <string name="create_poll_info">These information is permanent and cannot be changed later.</string>
+    <string name="share_poll_text">Share poll</string>
+    <string name="edit_poll_text">Edit poll</string>
+    <string name="refresh_text">Refresh</string>
+    <string name="pie_chart_text">Pie Chart</string>
+    <string name="save_text">Save</string>
+    <string name="scan_qr_text">Scan QR</string>
+    <string name="cancel_text">Cancel</string>
 
 </resources>

@@ -1,4 +1,4 @@
-package com.zaidhuda.pollease.Activities;
+package com.zaidhuda.pollease.activities;
 
 import com.journeyapps.barcodescanner.CaptureActivity;
 

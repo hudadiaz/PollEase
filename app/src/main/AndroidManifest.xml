@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <activity
-            android:name=".Activities.MainActivity"
+            android:name=".activities.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -30,13 +30,13 @@
                     android:scheme="http" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.CaptureActivityAnyOrientation" />
+        <activity android:name=".activities.CaptureActivityAnyOrientation" />
         <activity
-            android:name=".Activities.PollActivity"
+            android:name=".activities.PollActivity"
             android:label="@string/title_activity_poll"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Activities.PollEditActivity"
+            android:name=".activities.PollEditActivity"
             android:label="@string/title_activity_poll_edit"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>

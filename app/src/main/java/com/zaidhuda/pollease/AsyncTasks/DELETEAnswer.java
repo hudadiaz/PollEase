@@ -6,8 +6,8 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-import com.zaidhuda.pollease.Objects.Poll;
 import com.zaidhuda.pollease.R;
+import com.zaidhuda.pollease.objects.Poll;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
