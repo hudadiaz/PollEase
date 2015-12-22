@@ -142,16 +142,16 @@ public class MainActivity extends AppCompatActivity {
         pollDataSource.open();
         pollDataSource.deletePoll(poll);
         populatePollList(pollList);
-        new AlertDialog.Builder(MainActivity.this)
-                .setTitle("Delete Vote")
-                .setMessage(poll.getQuestion() + "\n\nDo you want to delete your vote from this poll? This action is irreversible.")
-                .setIcon(ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_warning_black_48dp))
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-//                        removeVoteFromPoll(selectedPoll);
-                    }
-                })
-                .setNegativeButton(android.R.string.no, null).show();
+//        new AlertDialog.Builder(MainActivity.this)
+//                .setTitle("Delete Vote")
+//                .setMessage(poll.getQuestion() + "\n\nDo you want to delete your vote from this poll? This action is irreversible.")
+//                .setIcon(ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_warning_black_48dp))
+//                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int whichButton) {
+////                        removeVoteFromPoll(selectedPoll);
+//                    }
+//                })
+//                .setNegativeButton(android.R.string.no, null).show();
     }
 
     @Override
