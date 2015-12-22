@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.ListFragment;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -23,7 +22,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.zaidhuda.pollease.Activities.MainActivity;
 import com.zaidhuda.pollease.AsyncTasks.DELETEAnswer;
 import com.zaidhuda.pollease.AsyncTasks.POSTChoice;
 import com.zaidhuda.pollease.Objects.Choice;
@@ -132,10 +130,7 @@ public class PollEditAnswerFragment extends ListFragment implements POSTChoice.O
         int id = item.getItemId();
 
         if (id == R.id.go_to_main) {
-            Intent intent = new Intent(getActivity(), MainActivity.class);
-            startActivity(intent);
             getActivity().finish();
-            return true;
         }
 
         return super.onOptionsItemSelected(item);

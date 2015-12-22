@@ -22,11 +22,15 @@ public class Poll implements Serializable {
     }
 
     public String getQuestion() {
-        return "Poll#" + getId() + ": " + question;
+        return question;
     }
 
     public void setQuestion(String question) {
         this.question = question;
+    }
+
+    public String getPollName() {
+        return "Poll#" + getId();
     }
 
     public ArrayList<Choice> getChoices() {

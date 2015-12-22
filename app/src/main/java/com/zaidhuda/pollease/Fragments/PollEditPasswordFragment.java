@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,7 +16,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.zaidhuda.pollease.Activities.MainActivity;
 import com.zaidhuda.pollease.Objects.Poll;
 import com.zaidhuda.pollease.R;
 
@@ -84,7 +82,7 @@ public class PollEditPasswordFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_poll_edit_answers, menu);
+        inflater.inflate(R.menu.menu_poll_edit, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -93,10 +91,7 @@ public class PollEditPasswordFragment extends Fragment {
         int id = item.getItemId();
 
         if (id == R.id.go_to_main) {
-            Intent intent = new Intent(getActivity(), MainActivity.class);
-            startActivity(intent);
             getActivity().finish();
-            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -198,7 +193,7 @@ public class PollEditPasswordFragment extends Fragment {
             if (progressDialog.isShowing()) {
                 progressDialog.dismiss();
             }
-            if (responseCode == 200) {
+            if (responseCode == HttpURLConnection.HTTP_OK) {
                 onPasswordAccepted();
                 Toast.makeText(getActivity(), "Password match", Toast.LENGTH_SHORT).show();
             } else

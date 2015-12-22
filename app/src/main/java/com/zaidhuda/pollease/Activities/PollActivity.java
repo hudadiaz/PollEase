@@ -10,7 +10,6 @@ import android.view.MenuItem;
 
 import com.zaidhuda.pollease.AsyncTasks.GETPoll;
 import com.zaidhuda.pollease.Fragments.PollQuestionFragment;
-import com.zaidhuda.pollease.Fragments.PollResultBarChartFragment;
 import com.zaidhuda.pollease.Fragments.PollResultPieChartFragment;
 import com.zaidhuda.pollease.Objects.Poll;
 import com.zaidhuda.pollease.Objects.User;
@@ -63,6 +62,7 @@ public class PollActivity extends AppCompatActivity implements PollQuestionFragm
             startActivity(intent);
             return true;
         } else if (id == R.id.action_pie_chart) {
+            previousChoice = selectedChoiceID;
             displayPieChartFragment();
             return true;
         } else if (id == R.id.action_edit_poll) {
@@ -96,13 +96,13 @@ public class PollActivity extends AppCompatActivity implements PollQuestionFragm
                 .commit();
     }
 
-    public void displayBarChartFragment() {
-        PollResultBarChartFragment pollResultFragment = PollResultBarChartFragment.newInstance(poll, selectedChoiceID);
-        fragmentManager.beginTransaction()
-                .replace(R.id.PollPrimaryFragment, pollResultFragment)
-                .addToBackStack(null)
-                .commit();
-    }
+//    public void displayBarChartFragment() {
+//        PollResultBarChartFragment pollResultFragment = PollResultBarChartFragment.newInstance(poll, selectedChoiceID);
+//        fragmentManager.beginTransaction()
+//                .replace(R.id.PollPrimaryFragment, pollResultFragment)
+//                .addToBackStack(null)
+//                .commit();
+//    }
 
     @Override
     public void showResult(int selectedChoiceID, int previousChoice) {
@@ -114,6 +114,7 @@ public class PollActivity extends AppCompatActivity implements PollQuestionFragm
     @Override
     public void setPoll(Poll poll) {
         this.poll = poll;
+        setTitle(poll.getPollName());
         poll.setUrl(request_url);
         displayPollQuestionFragment();
         pollGetter.detachListener();

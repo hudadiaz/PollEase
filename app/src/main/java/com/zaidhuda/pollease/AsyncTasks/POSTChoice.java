@@ -81,10 +81,12 @@ public class POSTChoice extends AsyncTask<String, Void, String> {
             conn.connect();
 
             responseCode = conn.getResponseCode();
-            InputStream response = conn.getInputStream();
-            String jsonResult = inputStreamToString(response).toString();
-            JSONObject jChoice = new JSONObject(jsonResult);
-            choice = new Gson().fromJson(jChoice.getJSONObject("choice").toString(), Choice.class);
+            if (responseCode == HttpURLConnection.HTTP_CREATED) {
+                InputStream response = conn.getInputStream();
+                String jsonResult = inputStreamToString(response).toString();
+                JSONObject jChoice = new JSONObject(jsonResult);
+                choice = new Gson().fromJson(jChoice.getJSONObject("choice").toString(), Choice.class);
+            }
         } catch (ProtocolException e) {
             e.printStackTrace();
             showErrorToast("Error submitting answer");

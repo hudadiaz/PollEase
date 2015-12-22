@@ -3,7 +3,6 @@ package com.zaidhuda.pollease.Fragments;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
@@ -19,7 +18,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.zaidhuda.pollease.Activities.MainActivity;
 import com.zaidhuda.pollease.AsyncTasks.POSTPoll;
 import com.zaidhuda.pollease.Objects.Poll;
 import com.zaidhuda.pollease.R;
@@ -103,10 +101,7 @@ public class PollEditCreateFragment extends Fragment implements POSTPoll.OnPOSTP
         int id = item.getItemId();
 
         if (id == R.id.go_to_main) {
-            Intent intent = new Intent(getActivity(), MainActivity.class);
-            startActivity(intent);
             getActivity().finish();
-            return true;
         }
 
         return super.onOptionsItemSelected(item);

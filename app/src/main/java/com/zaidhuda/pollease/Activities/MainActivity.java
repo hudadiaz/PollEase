@@ -12,11 +12,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.zaidhuda.pollease.Helpers.UserDataSource;
 import com.zaidhuda.pollease.Objects.User;
 import com.zaidhuda.pollease.R;
 
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private String SESSION_URL;
     private String jsonResult, request_url = "";
     private int responseCode;
+    private UserDataSource userDataSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        POLLS_URL = getResources().getString(R.string.polls_url);
+        SESSION_URL = getResources().getString(R.string.session_url);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -57,10 +62,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        user = new User(Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
-        POLLS_URL = getResources().getString(R.string.polls_url);
-        SESSION_URL = getResources().getString(R.string.session_url);
-        registerSession();
+        userDataSource = new UserDataSource(this);
+        userDataSource.open();
+        user = userDataSource.getUser();
+
+        if (user == null) {
+            user = new User(Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
+            registerSession();
+        }
+
+        ((TextView) findViewById(R.id.user_identifier)).setText(user.getToken());
 
         Uri data = getIntent().getData();
         if (data != null && data.toString().startsWith(POLLS_URL))
@@ -99,6 +110,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        userDataSource.open();
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        userDataSource.close();
+        super.onPause();
+    }
+
     private void startPollActivity(String re) {
         Intent intent = new Intent(this, PollActivity.class);
         intent.putExtra("poll_url", re);
@@ -115,9 +138,9 @@ public class MainActivity extends AppCompatActivity {
         try {
             JSONObject jUser = new JSONObject(jsonResult);
             User tempUser = new Gson().fromJson(jUser.toString(), User.class);
-            user.setID(tempUser.getID());
+            user.setId(tempUser.getId());
             user.setToken(tempUser.getToken());
-            //todo save user info to database
+            userDataSource.createUser(user);
         } catch (Exception e) {
             showErrorToast("Error logging in");
         }

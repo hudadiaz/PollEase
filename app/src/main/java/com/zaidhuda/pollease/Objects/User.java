@@ -7,18 +7,18 @@ import java.io.Serializable;
  */
 public class User implements Serializable {
     private final String identifier;
-    private String ID, token;
+    private String id, token;
 
     public User(String identifier) {
         this.identifier = identifier;
     }
 
-    public String getID() {
-        return ID;
+    public String getId() {
+        return id;
     }
 
-    public void setID(String ID) {
-        this.ID = ID;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getIdentifier() {
