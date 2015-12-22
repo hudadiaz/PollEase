@@ -1,4 +1,4 @@
-package com.zaidhuda.pollease;
+package com.zaidhuda.pollease.Fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -10,6 +10,13 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+
+import com.zaidhuda.pollease.AsyncTasks.POSTSelection;
+import com.zaidhuda.pollease.Objects.Choice;
+import com.zaidhuda.pollease.Objects.ChoiceRadioButton;
+import com.zaidhuda.pollease.Objects.Poll;
+import com.zaidhuda.pollease.Objects.User;
+import com.zaidhuda.pollease.R;
 
 public class PollQuestionFragment extends Fragment implements POSTSelection.OnPOSTSelectionListener {
     private static final String POLL = "poll";

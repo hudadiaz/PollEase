@@ -1,12 +1,12 @@
-package com.zaidhuda.pollease;
+package com.zaidhuda.pollease.AsyncTasks;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.zaidhuda.pollease.Objects.Poll;
 
 import org.json.JSONObject;
 
@@ -31,6 +31,7 @@ public class GETPoll extends AsyncTask<String, Void, String> {
     private Poll poll;
     private ProgressDialog progressDialog;
     private OnGETPollListener mListener;
+    private int responseCode;
 
 
     public GETPoll(String polls_url, String requestUrl, Activity activity) {
@@ -54,21 +55,22 @@ public class GETPoll extends AsyncTask<String, Void, String> {
     protected String doInBackground(String... params) {
         try {
             URL url = new URL(requestUrl);
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            InputStream response = con.getInputStream();
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            InputStream response = conn.getInputStream();
             jsonResult = inputStreamToString(response).toString();
+            responseCode = conn.getResponseCode();
         } catch (ProtocolException e) {
             e.printStackTrace();
-            Toast.makeText(activity, "Error in retrieving poll", Toast.LENGTH_LONG).show();
+            showErrorToast("Error in retrieving poll");
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            Toast.makeText(activity, "Error in retrieving poll", Toast.LENGTH_LONG).show();
+            showErrorToast("Error in retrieving poll");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-            Toast.makeText(activity, "Error in retrieving poll", Toast.LENGTH_LONG).show();
+            showErrorToast("Error in retrieving poll");
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(activity, "Error in retrieving poll", Toast.LENGTH_LONG).show();
+            showErrorToast("Error in retrieving poll");
         }
         return null;
     }
@@ -82,7 +84,7 @@ public class GETPoll extends AsyncTask<String, Void, String> {
                 answer.append(rLine);
             }
         } catch (IOException e) {
-            Toast.makeText(activity, "Error in retrieving poll", Toast.LENGTH_LONG).show();
+            showErrorToast("Error in retrieving poll");
         }
         return answer;
     }
@@ -97,7 +99,7 @@ public class GETPoll extends AsyncTask<String, Void, String> {
         if (progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
-        if (requestUrl.startsWith(POLLS_URL)) {
+        if (responseCode == HttpURLConnection.HTTP_OK && requestUrl.startsWith(POLLS_URL)) {
             ProcessPollJSON();
         }
     }
@@ -105,12 +107,19 @@ public class GETPoll extends AsyncTask<String, Void, String> {
     public void ProcessPollJSON() {
         try {
             JSONObject jPoll = new JSONObject(jsonResult);
-            setPoll(new Gson().fromJson(jPoll.getJSONObject("poll").toString(), Poll.class));
+            setPoll(new Gson().fromJson(jPoll.toString(), Poll.class));
             Toast.makeText(activity, "Poll retrieved", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
-            Log.d("JSONParse Error ", "Error" + e.toString());
-            Toast.makeText(activity, "Error in retrieving poll", Toast.LENGTH_LONG).show();
+            showErrorToast("Error retrieving poll");
         }
+    }
+
+    private void showErrorToast(final String msg) {
+        activity.runOnUiThread(new Runnable() {
+            public void run() {
+                Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public interface OnGETPollListener {

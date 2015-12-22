@@ -1,4 +1,4 @@
-package com.zaidhuda.pollease;
+package com.zaidhuda.pollease.Activities;
 
 import android.app.FragmentManager;
 import android.content.Intent;
@@ -7,6 +7,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.zaidhuda.pollease.AsyncTasks.GETPoll;
+import com.zaidhuda.pollease.Fragments.PollQuestionFragment;
+import com.zaidhuda.pollease.Fragments.PollResultBarChartFragment;
+import com.zaidhuda.pollease.Fragments.PollResultPieChartFragment;
+import com.zaidhuda.pollease.Objects.Poll;
+import com.zaidhuda.pollease.Objects.User;
+import com.zaidhuda.pollease.R;
 
 public class PollActivity extends AppCompatActivity implements PollQuestionFragment.OnFragmentInteractionListener, GETPoll.OnGETPollListener {
     private String POLLS_URL;

@@ -1,10 +1,13 @@
-package com.zaidhuda.pollease;
+package com.zaidhuda.pollease.AsyncTasks;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.widget.Toast;
+
+import com.zaidhuda.pollease.Objects.Poll;
+import com.zaidhuda.pollease.R;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -38,8 +41,8 @@ public class DELETEAnswer extends AsyncTask<String, Void, String> {
         mListener = (OnDELETEAnswerListener) fragment;
     }
 
-    private void onAnswerAccepted() {
-        mListener.onAnswerAccepted(choiceId);
+    private void onAnswerDeleted() {
+        mListener.onAnswerDeleted(choiceId);
     }
 
     @Override
@@ -55,19 +58,18 @@ public class DELETEAnswer extends AsyncTask<String, Void, String> {
             conn.connect();
 
             responseCode = conn.getResponseCode();
-            System.out.println(responseCode);
         } catch (ProtocolException e) {
             e.printStackTrace();
-            Toast.makeText(activity, "Error deleting answer", Toast.LENGTH_LONG).show();
+            showErrorToast("Failed deleting answer");
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            Toast.makeText(activity, "Error deleting answer", Toast.LENGTH_LONG).show();
+            showErrorToast("Failed deleting answer");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-            Toast.makeText(activity, "Error deleting answer", Toast.LENGTH_LONG).show();
+            showErrorToast("Failed deleting answer");
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(activity, "Error deleting answer", Toast.LENGTH_LONG).show();
+            showErrorToast("Failed deleting answer");
         }
 
         return null;
@@ -83,15 +85,23 @@ public class DELETEAnswer extends AsyncTask<String, Void, String> {
         if (progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
-        if (responseCode == 204) {
-            onAnswerAccepted();
+        if (responseCode == HttpURLConnection.HTTP_NO_CONTENT) {
+            onAnswerDeleted();
             Toast.makeText(activity, "Answer deleted", Toast.LENGTH_SHORT).show();
         } else
-            Toast.makeText(activity, "Failed deleting answer", Toast.LENGTH_SHORT).show();
+            showErrorToast("Failed deleting answer");
         mListener = null;
     }
 
+    private void showErrorToast(final String msg) {
+        activity.runOnUiThread(new Runnable() {
+            public void run() {
+                Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     public interface OnDELETEAnswerListener {
-        void onAnswerAccepted(int choiceId);
+        void onAnswerDeleted(int choiceId);
     }
 }

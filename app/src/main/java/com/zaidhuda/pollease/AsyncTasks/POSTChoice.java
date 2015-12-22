@@ -1,11 +1,15 @@
-package com.zaidhuda.pollease;
+package com.zaidhuda.pollease.AsyncTasks;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.zaidhuda.pollease.Objects.Choice;
+import com.zaidhuda.pollease.Objects.Poll;
+import com.zaidhuda.pollease.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,30 +28,30 @@ import java.net.URL;
 /**
  * Created by Zaid on 20/12/2015.
  */
-public class POSTSelection extends AsyncTask<String, Void, String> {
+public class POSTChoice extends AsyncTask<String, Void, String> {
     private Activity activity;
     private Fragment fragment;
-    private String selectionUrl;
+    private Choice choice;
+    private String choiceUrl;
+    private String answer;
     private Poll poll;
-    private User user;
-    private int selectedChoiceID;
-    private int previousChoice;
     private ProgressDialog progressDialog;
-    private OnPOSTSelectionListener mListener;
+    private OnPOSTChoiceListener mListener;
+    private int responseCode;
 
-    public POSTSelection(User user, Poll poll, int selectedChoiceID, Fragment fragment) {
+    public POSTChoice(Poll poll, String choice, Fragment fragment) {
         this.activity = fragment.getActivity();
+        this.answer = choice;
         this.poll = poll;
-        this.user = user;
-        this.selectedChoiceID = selectedChoiceID;
-        selectionUrl = activity.getResources().getString(R.string.selection_url).replace(":poll_id", String.valueOf(poll.getId()));
-        this.execute(selectionUrl);
+        activity = fragment.getActivity();
+        choiceUrl = activity.getResources().getString(R.string.choices_url).replace(":poll_id", String.valueOf(poll.getId()));
+        this.execute(choiceUrl);
 
-        mListener = (OnPOSTSelectionListener) fragment;
+        mListener = (OnPOSTChoiceListener) fragment;
     }
 
-    private void onSelectionPosted(int selectedChoiceID, int previousChoice) {
-        mListener.onSelectionPosted(selectedChoiceID, previousChoice);
+    private void onCreateAnswer(Choice choice) {
+        mListener.onCreateAnswer(choice);
     }
 
     public void detachListener() {
@@ -57,45 +61,45 @@ public class POSTSelection extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... params) {
         try {
-            URL url = new URL(selectionUrl.replace(":id", String.valueOf(selectedChoiceID)));
+            URL url = new URL(choiceUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setReadTimeout(10000);
             conn.setConnectTimeout(15000);
-            conn.setRequestMethod("PUT");
+            conn.setRequestMethod("POST");
             conn.setDoInput(true);
             conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
 
             JSONObject param = new JSONObject();
-            JSONObject userP = new JSONObject().put("identifier", user.getIdentifier())
-                    .put("token", user.getToken());
-            JSONObject selectionP = new JSONObject().put("choice_id", selectedChoiceID);
-            param.put("poll_id", poll.getId()).put("user", userP).put("selection", selectionP);
+            JSONObject choiceP = new JSONObject().put("answer", answer);
+            param.put("choice", choiceP);
+            param.put("password", poll.getPassword());
 
             OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
             wr.write(param.toString());
             wr.flush();
 
             conn.connect();
+
+            responseCode = conn.getResponseCode();
             InputStream response = conn.getInputStream();
             String jsonResult = inputStreamToString(response).toString();
-            JSONObject jsonObject = new JSONObject(jsonResult);
-            previousChoice = jsonObject.getInt("previous_selection");
-            Log.d("previous", String.valueOf(previousChoice));
+            JSONObject jChoice = new JSONObject(jsonResult);
+            choice = new Gson().fromJson(jChoice.getJSONObject("choice").toString(), Choice.class);
         } catch (ProtocolException e) {
             e.printStackTrace();
-            Toast.makeText(activity, "Error in submitting vote", Toast.LENGTH_LONG).show();
+            showErrorToast("Error submitting answer");
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            Toast.makeText(activity, "Error in submitting vote", Toast.LENGTH_LONG).show();
+            showErrorToast("Error submitting answer");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-            Toast.makeText(activity, "Error in submitting vote", Toast.LENGTH_LONG).show();
+            showErrorToast("Error submitting answer");
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(activity, "Error in submitting vote", Toast.LENGTH_LONG).show();
+            showErrorToast("Error submitting answer");
         } catch (JSONException e) {
             e.printStackTrace();
-            Toast.makeText(activity, "Error in submitting vote", Toast.LENGTH_LONG).show();
+            showErrorToast("Error submitting answer");
         }
 
         return null;
@@ -110,14 +114,14 @@ public class POSTSelection extends AsyncTask<String, Void, String> {
                 answer.append(rLine);
             }
         } catch (IOException e) {
-            Toast.makeText(activity, "Error in submitting vote", Toast.LENGTH_LONG).show();
+            showErrorToast("Error submitting answer");
         }
         return answer;
     }
 
     @Override
     protected void onPreExecute() {
-        progressDialog = ProgressDialog.show(activity, "", "Submitting vote, please wait", false);
+        progressDialog = ProgressDialog.show(activity, "", "Submitting answer, please wait", false);
     }
 
     @Override
@@ -125,11 +129,22 @@ public class POSTSelection extends AsyncTask<String, Void, String> {
         if (progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
-        onSelectionPosted(selectedChoiceID, previousChoice);
-        Toast.makeText(activity, "Answer vote", Toast.LENGTH_SHORT).show();
+        if (responseCode == HttpURLConnection.HTTP_CREATED) {
+            onCreateAnswer(choice);
+            Toast.makeText(activity, "Choice added", Toast.LENGTH_SHORT).show();
+        } else
+            showErrorToast("Error submitting answer");
     }
 
-    public interface OnPOSTSelectionListener {
-        void onSelectionPosted(int selectedChoiceID, int previousChoice);
+    private void showErrorToast(final String msg) {
+        activity.runOnUiThread(new Runnable() {
+            public void run() {
+                Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public interface OnPOSTChoiceListener {
+        void onCreateAnswer(Choice choice);
     }
 }

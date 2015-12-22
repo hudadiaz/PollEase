@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.zaidhuda.pollease.PollResultBarChartFragment">
+    tools:context=".Fragments.PollResultBarChartFragment">
 
     <LinearLayout
         android:id="@+id/barChartParent"

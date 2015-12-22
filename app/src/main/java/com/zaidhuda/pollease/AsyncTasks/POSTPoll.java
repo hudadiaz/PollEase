@@ -1,4 +1,4 @@
-package com.zaidhuda.pollease;
+package com.zaidhuda.pollease.AsyncTasks;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -7,6 +7,8 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.zaidhuda.pollease.Objects.Poll;
+import com.zaidhuda.pollease.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,29 +27,31 @@ import java.net.URL;
 /**
  * Created by Zaid on 20/12/2015.
  */
-public class POSTChoice extends AsyncTask<String, Void, String> {
+public class POSTPoll extends AsyncTask<String, Void, String> {
     private Activity activity;
     private Fragment fragment;
-    private Choice choice;
-    private String choiceUrl;
-    private String answer;
     private Poll poll;
+    private String createUrl;
+    private String question;
+    private String password;
     private ProgressDialog progressDialog;
-    private OnPOSTChoiceListener mListener;
+    private OnPOSTPollListener mListener;
+    private int responseCode;
 
-    public POSTChoice(Poll poll, String choice, Fragment fragment) {
+    public POSTPoll(String question, String password, Fragment fragment) {
         this.activity = fragment.getActivity();
-        this.answer = choice;
-        this.poll = poll;
+        this.question = question;
+        this.password = password;
         activity = fragment.getActivity();
-        choiceUrl = activity.getResources().getString(R.string.choices_url).replace(":poll_id", String.valueOf(poll.getId()));
-        this.execute(choiceUrl);
+        createUrl = activity.getResources().getString(R.string.polls_url);
+        this.execute(createUrl);
 
-        mListener = (OnPOSTChoiceListener) fragment;
+        mListener = (OnPOSTPollListener) fragment;
     }
 
-    private void onCreateAnswer(Choice choice) {
-        mListener.onCreateAnswer(choice);
+    private void onPollCreated() {
+        if (mListener != null)
+            mListener.onPollCreated(poll);
     }
 
     public void detachListener() {
@@ -57,7 +61,7 @@ public class POSTChoice extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... params) {
         try {
-            URL url = new URL(choiceUrl);
+            URL url = new URL(createUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setReadTimeout(10000);
             conn.setConnectTimeout(15000);
@@ -65,35 +69,37 @@ public class POSTChoice extends AsyncTask<String, Void, String> {
             conn.setDoInput(true);
             conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
 
-            JSONObject param = new JSONObject();
-            JSONObject choiceP = new JSONObject().put("answer", answer);
-            param.put("choice", choiceP);
-            param.put("password", poll.getPassword());
+            JSONObject pollP = new JSONObject()
+                    .put("question", question)
+                    .put("password", password);
+            JSONObject param = new JSONObject().put("poll", pollP);
 
             OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
             wr.write(param.toString());
             wr.flush();
 
             conn.connect();
+
+            responseCode = conn.getResponseCode();
             InputStream response = conn.getInputStream();
             String jsonResult = inputStreamToString(response).toString();
-            JSONObject jChoice = new JSONObject(jsonResult);
-            choice = new Gson().fromJson(jChoice.getJSONObject("choice").toString(), Choice.class);
+            JSONObject jPoll = new JSONObject(jsonResult);
+            poll = new Gson().fromJson(jPoll.getJSONObject("poll").toString(), Poll.class);
         } catch (ProtocolException e) {
             e.printStackTrace();
-            Toast.makeText(activity, "Error submitting answer", Toast.LENGTH_LONG).show();
+            showErrorToast("Error submitting poll");
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            Toast.makeText(activity, "Error submitting answer", Toast.LENGTH_LONG).show();
+            showErrorToast("Error submitting poll");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-            Toast.makeText(activity, "Error submitting answer", Toast.LENGTH_LONG).show();
+            showErrorToast("Error submitting poll");
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(activity, "Error submitting answer", Toast.LENGTH_LONG).show();
+            showErrorToast("Error submitting poll");
         } catch (JSONException e) {
             e.printStackTrace();
-            Toast.makeText(activity, "Error submitting answer", Toast.LENGTH_LONG).show();
+            showErrorToast("Error submitting poll");
         }
 
         return null;
@@ -108,14 +114,14 @@ public class POSTChoice extends AsyncTask<String, Void, String> {
                 answer.append(rLine);
             }
         } catch (IOException e) {
-            Toast.makeText(activity, "Error submitting answer", Toast.LENGTH_LONG).show();
+            showErrorToast("Error submitting poll");
         }
         return answer;
     }
 
     @Override
     protected void onPreExecute() {
-        progressDialog = ProgressDialog.show(activity, "", "Submitting answer, please wait", false);
+        progressDialog = ProgressDialog.show(activity, "", "Submitting poll, please wait", false);
     }
 
     @Override
@@ -123,11 +129,23 @@ public class POSTChoice extends AsyncTask<String, Void, String> {
         if (progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
-        onCreateAnswer(choice);
-        Toast.makeText(activity, "Choice added", Toast.LENGTH_SHORT).show();
+        if (responseCode == HttpURLConnection.HTTP_CREATED) {
+            onPollCreated();
+            Toast.makeText(activity, "Poll created", Toast.LENGTH_SHORT).show();
+        } else
+            showErrorToast("Error submitting poll");
+
     }
 
-    public interface OnPOSTChoiceListener {
-        void onCreateAnswer(Choice choice);
+    private void showErrorToast(final String msg) {
+        activity.runOnUiThread(new Runnable() {
+            public void run() {
+                Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public interface OnPOSTPollListener {
+        void onPollCreated(Poll poll);
     }
 }

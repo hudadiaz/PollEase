@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">PollEase</string>
 
+    <string name="host">pollease.herokuapp.com</string>
     <string name="base_url">http://pollease.herokuapp.com/api/v1/</string>
     <string name="polls_url">http://pollease.herokuapp.com/api/v1/polls/</string>
     <string name="session_url">http://pollease.herokuapp.com/api/v1/sessions</string>
@@ -35,5 +36,9 @@
     <string name="action_create_answer">Add answer</string>
     <string name="action_edit_poll">Edit Poll</string>
     <string name="create_poll_password_required_info">This password is set on poll creation. Might be blank.</string>
+    <string name="new_poll_title">Create a poll</string>
+    <string name="verify_password_title">Verify password</string>
+    <string name="poll_edit_answers_title">Edit poll answer</string>
+    <string name="create_poll_info">These information is permanent and cannot be changed later.</string>
 
 </resources>

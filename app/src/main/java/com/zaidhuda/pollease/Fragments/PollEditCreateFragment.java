@@ -1,13 +1,28 @@
-package com.zaidhuda.pollease;
+package com.zaidhuda.pollease.Fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.zaidhuda.pollease.Activities.MainActivity;
+import com.zaidhuda.pollease.AsyncTasks.POSTPoll;
+import com.zaidhuda.pollease.Objects.Poll;
+import com.zaidhuda.pollease.R;
 
 public class PollEditCreateFragment extends Fragment implements POSTPoll.OnPOSTPollListener {
     private View view;
@@ -15,6 +30,29 @@ public class PollEditCreateFragment extends Fragment implements POSTPoll.OnPOSTP
     private EditText questionET, passwordET;
     private OnFragmentInteractionListener mListener;
     private POSTPoll postPoll;
+    private TextView counter;
+    private Button submit;
+    private final TextWatcher mTextEditorWatcher = new TextWatcher() {
+        String max = "/255";
+
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            String temp = s.length() + max;
+            counter.setText(temp);
+            if (s.length() > Integer.parseInt(max.substring(1, max.length()))) {
+                counter.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorRed));
+                submit.setEnabled(false);
+            } else {
+                counter.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorGreen));
+                submit.setEnabled(true);
+            }
+        }
+
+        public void afterTextChanged(Editable s) {
+        }
+    };
 
     public PollEditCreateFragment() {
     }
@@ -26,27 +64,52 @@ public class PollEditCreateFragment extends Fragment implements POSTPoll.OnPOSTP
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        getActivity().setTitle(R.string.new_poll_title);
         view = inflater.inflate(R.layout.fragment_poll_edit_create, container, false);
         questionET = (EditText) view.findViewById(R.id.question_editText);
+        questionET.addTextChangedListener(mTextEditorWatcher);
         passwordET = (EditText) view.findViewById(R.id.password_editText);
-        view.findViewById(R.id.poll_create_button).setOnClickListener(new View.OnClickListener() {
+        counter = (TextView) view.findViewById(R.id.text_counter);
+        submit = (Button) view.findViewById(R.id.poll_create_button);
+        submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 question = questionET.getText().toString();
                 password = passwordET.getText().toString();
-                if (question.length() > 10) {
+                if (question.length() > 0) {
                     submitPoll(question, password);
-                }
+                } else
+                    Toast.makeText(getActivity(), "Enter a question!", Toast.LENGTH_SHORT).show();
             }
         });
 
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_poll_edit, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.go_to_main) {
+            Intent intent = new Intent(getActivity(), MainActivity.class);
+            startActivity(intent);
+            getActivity().finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     public void submitPoll(String question, String password) {
