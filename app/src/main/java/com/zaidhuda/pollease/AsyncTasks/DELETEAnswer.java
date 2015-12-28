@@ -58,13 +58,7 @@ public class DELETEAnswer extends AsyncTask<String, Void, String> {
             conn.connect();
 
             responseCode = conn.getResponseCode();
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-            showErrorToast("Failed deleting answer");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            showErrorToast("Failed deleting answer");
-        } catch (UnsupportedEncodingException e) {
+        } catch (ProtocolException | MalformedURLException | UnsupportedEncodingException e) {
             e.printStackTrace();
             showErrorToast("Failed deleting answer");
         } catch (IOException e) {

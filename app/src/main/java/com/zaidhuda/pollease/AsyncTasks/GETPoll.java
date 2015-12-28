@@ -74,13 +74,7 @@ public class GETPoll extends AsyncTask<String, Void, String> {
             InputStream response = conn.getInputStream();
             jsonResult = inputStreamToString(response).toString();
             responseCode = conn.getResponseCode();
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-            showErrorToast("Error in retrieving poll");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            showErrorToast("Error in retrieving poll");
-        } catch (UnsupportedEncodingException e) {
+        } catch (ProtocolException | MalformedURLException | UnsupportedEncodingException e) {
             e.printStackTrace();
             showErrorToast("Error in retrieving poll");
         } catch (IOException e) {

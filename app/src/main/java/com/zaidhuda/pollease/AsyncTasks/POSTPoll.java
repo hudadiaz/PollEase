@@ -99,19 +99,10 @@ public class POSTPoll extends AsyncTask<String, Void, String> {
             String jsonResult = inputStreamToString(response).toString();
             JSONObject jPoll = new JSONObject(jsonResult);
             poll = new Gson().fromJson(jPoll.getJSONObject("poll").toString(), Poll.class);
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-            showErrorToast("Error submitting poll");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            showErrorToast("Error submitting poll");
-        } catch (UnsupportedEncodingException e) {
+        } catch (ProtocolException | MalformedURLException | UnsupportedEncodingException | JSONException e) {
             e.printStackTrace();
             showErrorToast("Error submitting poll");
         } catch (IOException e) {
-            e.printStackTrace();
-            showErrorToast("Error submitting poll");
-        } catch (JSONException e) {
             e.printStackTrace();
             showErrorToast("Error submitting poll");
         }

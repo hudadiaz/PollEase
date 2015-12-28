@@ -87,19 +87,10 @@ public class POSTChoice extends AsyncTask<String, Void, String> {
                 JSONObject jChoice = new JSONObject(jsonResult);
                 choice = new Gson().fromJson(jChoice.getJSONObject("choice").toString(), Choice.class);
             }
-        } catch (ProtocolException e) {
+        } catch (ProtocolException | MalformedURLException | UnsupportedEncodingException e) {
             e.printStackTrace();
             showErrorToast("Error submitting answer");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            showErrorToast("Error submitting answer");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            showErrorToast("Error submitting answer");
-        } catch (IOException e) {
-            e.printStackTrace();
-            showErrorToast("Error submitting answer");
-        } catch (JSONException e) {
+        } catch (IOException | JSONException e) {
             e.printStackTrace();
             showErrorToast("Error submitting answer");
         }
