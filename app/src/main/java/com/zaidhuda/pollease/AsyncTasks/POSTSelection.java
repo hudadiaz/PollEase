@@ -88,13 +88,7 @@ public class POSTSelection extends AsyncTask<String, Void, String> {
             JSONObject jsonObject = new JSONObject(jsonResult);
             previousChoice = jsonObject.getInt("previous_selection");
             Log.d("previous", String.valueOf(previousChoice));
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-            showErrorToast("Error in submitting vote");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            showErrorToast("Error in submitting vote");
-        } catch (UnsupportedEncodingException e) {
+        } catch (ProtocolException | MalformedURLException | UnsupportedEncodingException e) {
             e.printStackTrace();
             showErrorToast("Error in submitting vote");
         } catch (IOException e) {
@@ -102,7 +96,6 @@ public class POSTSelection extends AsyncTask<String, Void, String> {
             showErrorToast("Error in submitting vote");
         } catch (JSONException e) {
             e.printStackTrace();
-            showErrorToast("Error in submitting vote");
         }
 
         return null;

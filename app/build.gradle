@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.zaidhuda.pollease"
-        minSdkVersion 15
+        minSdkVersion 14
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -42,17 +42,17 @@ repositories {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-
-    // zxing is used for qr scanning
-
-    // MPAndroidChart is used for qr charting the poll result
-
-    // Google Gson convert to and from json
     compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.android.support:design:23.0.1'
+    compile 'com.android.support:support-v4:23.0.1'
+
+    // zxing is used for qr scanning
     compile 'com.journeyapps:zxing-android-embedded:3.0.3@aar'
     compile 'com.google.zxing:core:3.2.0'
+
+    // MPAndroidChart is used for qr charting the poll result
     compile 'com.github.PhilJay:MPAndroidChart:v2.1.6'
+
+    // Google Gson convert to and from json
     compile 'com.google.code.gson:gson:2.5'
-    compile 'com.android.support:support-v4:23.0.1'
 }

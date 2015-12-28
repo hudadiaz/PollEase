@@ -47,6 +47,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private User user;
     private String POLLS_URL;
+    private String BASE_URL;
     private String SESSION_URL;
     private String jsonResult, request_url = "";
     private int responseCode;
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         POLLS_URL = getResources().getString(R.string.polls_url);
+        BASE_URL = getResources().getString(R.string.base_api_url);
         SESSION_URL = getResources().getString(R.string.session_url);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -83,8 +85,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void handleIntentFilter() {
         Uri data = getIntent().getData();
-        if (data != null && data.toString().startsWith(POLLS_URL))
-            startPollActivity(data.toString());
+        if (data != null) {
+            List<String> segments = data.getPathSegments();
+            int index = segments.indexOf("polls");
+            try {
+                String id = segments.get(++index);
+                System.out.println(id);
+                startPollActivity(POLLS_URL += id);
+            } catch (IndexOutOfBoundsException e) {
+                e.printStackTrace();
+            }
+        }
 
     }
 

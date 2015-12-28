@@ -13,7 +13,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,6 +53,7 @@ public class PollEditCreateFragment extends Fragment implements POSTPoll.OnPOSTP
         public void afterTextChanged(Editable s) {
         }
     };
+    private CheckBox rememberPass;
 
     public PollEditCreateFragment() {
     }
@@ -63,6 +66,7 @@ public class PollEditCreateFragment extends Fragment implements POSTPoll.OnPOSTP
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     }
 
     @Override
@@ -74,6 +78,7 @@ public class PollEditCreateFragment extends Fragment implements POSTPoll.OnPOSTP
         questionET.addTextChangedListener(mTextEditorWatcher);
         passwordET = (EditText) view.findViewById(R.id.password_editText);
         counter = (TextView) view.findViewById(R.id.text_counter);
+        rememberPass = (CheckBox) view.findViewById(R.id.remember_password_check);
         submit = (Button) view.findViewById(R.id.poll_create_button);
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,11 +148,11 @@ public class PollEditCreateFragment extends Fragment implements POSTPoll.OnPOSTP
     public void onPollCreated(Poll poll) {
         poll.setPassword(password);
         if (mListener != null)
-            mListener.onReceivePoll(poll);
+            mListener.onReceivePoll(poll, rememberPass.isChecked());
         postPoll.detachListener();
     }
 
     public interface OnFragmentInteractionListener {
-        void onReceivePoll(Poll poll);
+        void onReceivePoll(Poll poll, boolean remember);
     }
 }

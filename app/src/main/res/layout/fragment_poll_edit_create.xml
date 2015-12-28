@@ -63,6 +63,13 @@
             android:text="@string/create_poll_info"
             android:textSize="12sp" />
 
+        <CheckBox
+            android:id="@+id/remember_password_check"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="@string/remember_password_check_text" />
+
         <Button
             android:id="@+id/poll_create_button"
             style="?android:textAppearanceSmall"

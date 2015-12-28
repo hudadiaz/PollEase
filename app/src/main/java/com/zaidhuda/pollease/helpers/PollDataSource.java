@@ -45,6 +45,21 @@ public class PollDataSource {
         database.insert(DBConstPoll.TABLE_NAME, null, values);
     }
 
+    public Poll getPoll(int id) {
+        Cursor cursor = database.query(DBConstPoll.TABLE_NAME,
+                allColumns, "id = " + String.valueOf(id), null, null, null, DBConstPoll.COLUMN_TIME_ADDED);
+        cursor.moveToFirst();
+        Poll poll = cursorToPoll(cursor);
+        cursor.close();
+        return poll;
+    }
+
+    public void updatePoll(Poll poll) throws SQLException {
+        ContentValues values = new ContentValues();
+        values.put(DBConstPoll.COLUMN_PASSWORD, poll.getPassword());
+        database.update(DBConstPoll.TABLE_NAME, values, DBConstPoll.COLUMN_ID + "=" + poll.getId(), null);
+    }
+
     public void deletePoll(Poll poll) throws SQLException {
         database.delete(DBConstPoll.TABLE_NAME, DBConstPoll.COLUMN_ID + "=" + poll.getId(), null);
     }

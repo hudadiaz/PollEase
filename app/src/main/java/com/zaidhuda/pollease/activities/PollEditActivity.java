@@ -2,6 +2,7 @@ package com.zaidhuda.pollease.activities;
 
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.database.SQLException;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -11,12 +12,14 @@ import com.zaidhuda.pollease.R;
 import com.zaidhuda.pollease.fragments.PollEditAnswerFragment;
 import com.zaidhuda.pollease.fragments.PollEditCreateFragment;
 import com.zaidhuda.pollease.fragments.PollEditPasswordFragment;
+import com.zaidhuda.pollease.helpers.PollDataSource;
 import com.zaidhuda.pollease.objects.Poll;
 
 public class PollEditActivity extends AppCompatActivity implements PollEditCreateFragment.OnFragmentInteractionListener,
         PollEditAnswerFragment.OnFragmentInteractionListener, PollEditPasswordFragment.OnFragmentInteractionListener {
     private Poll poll;
     private FragmentManager fragmentManager;
+    private PollDataSource pollDataSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,9 +29,17 @@ public class PollEditActivity extends AppCompatActivity implements PollEditCreat
         setSupportActionBar(toolbar);
 
         poll = (Poll) getIntent().getSerializableExtra("poll");
+        pollDataSource = new PollDataSource(this);
 
-        if (poll != null)
+        if (poll != null) {
+            pollDataSource.open();
+            try {
+                poll.setPassword(pollDataSource.getPoll(poll.getId()).getPassword());
+            } catch (SQLException e) {
+                System.out.println("cannot get poll");
+            }
             displayPollPasswordFragment();
+        }
         else
             displayPollCreateFragment();
     }
@@ -61,8 +72,17 @@ public class PollEditActivity extends AppCompatActivity implements PollEditCreat
     }
 
     @Override
-    public void onReceivePoll(Poll poll) {
+    public void onReceivePoll(Poll poll, boolean remember) {
         this.poll = poll;
+        if (remember) {
+            pollDataSource.open();
+            try {
+                pollDataSource.updatePoll(poll);
+            } catch (SQLException e) {
+                Log.d("DB", "Can'y update poll");
+            }
+            pollDataSource.close();
+        }
         displayPollEditFragment(poll);
     }
 
@@ -73,9 +93,17 @@ public class PollEditActivity extends AppCompatActivity implements PollEditCreat
     }
 
     @Override
-    public void onPasswordAccepted(String password) {
-        Log.d("password", password);
+    public void onPasswordAccepted(String password, boolean remember) {
         poll.setPassword(password);
+        if (remember) {
+            pollDataSource.open();
+            try {
+                pollDataSource.updatePoll(poll);
+            } catch (SQLException e) {
+                Log.d("DB", "Can'y update poll");
+            }
+            pollDataSource.close();
+        }
         displayPollEditFragment(poll);
     }
 }

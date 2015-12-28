@@ -90,7 +90,7 @@ public class PollEditAnswerFragment extends ListFragment implements POSTChoice.O
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        getActivity().setTitle(R.string.poll_edit_answers_title);
+        getActivity().setTitle(getString(R.string.edit_text) + " " + poll.getPollName());
         view = inflater.inflate(R.layout.fragment_poll_edit_answers, container, false);
         ((TextView) view.findViewById(R.id.question_TEXT)).setText(poll.getQuestion());
 
@@ -136,7 +136,8 @@ public class PollEditAnswerFragment extends ListFragment implements POSTChoice.O
         else if (id == R.id.action_share_poll) {
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.putExtra(Intent.EXTRA_TEXT, poll.getQuestion()+"\n\n"+poll.getUrl());
+            String webUrl = getString(R.string.web_poll_url).replace(":poll_id", String.valueOf(poll.getId()));
+            sendIntent.putExtra(Intent.EXTRA_TEXT, poll.getQuestion() + "\n\n" + webUrl);
             sendIntent.setType("text/plain");
             startActivity(sendIntent);
         }

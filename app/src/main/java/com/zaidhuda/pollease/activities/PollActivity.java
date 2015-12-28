@@ -74,7 +74,8 @@ public class PollActivity extends AppCompatActivity implements PollQuestionFragm
         else if (id == R.id.action_share_poll) {
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.putExtra(Intent.EXTRA_TEXT, poll.getQuestion() + "\n\n" + poll.getUrl());
+            String webUrl = getString(R.string.web_poll_url).replace(":poll_id", String.valueOf(poll.getId()));
+            sendIntent.putExtra(Intent.EXTRA_TEXT, poll.getQuestion() + "\n\n" + webUrl);
             sendIntent.setType("text/plain");
             startActivity(sendIntent);
         }

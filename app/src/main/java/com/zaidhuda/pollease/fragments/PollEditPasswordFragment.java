@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.database.SQLException;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,11 +13,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zaidhuda.pollease.R;
+import com.zaidhuda.pollease.helpers.PollDataSource;
 import com.zaidhuda.pollease.objects.Poll;
 
 import org.json.JSONException;
@@ -38,6 +42,7 @@ public class PollEditPasswordFragment extends Fragment {
     private String authorizeUrl;
     private String password;
     private EditText passwordET;
+    private CheckBox rememberPass;
     private int responseCode;
     private OnFragmentInteractionListener mListener;
 
@@ -69,12 +74,28 @@ public class PollEditPasswordFragment extends Fragment {
         getActivity().setTitle(R.string.verify_password_title);
         view = inflater.inflate(R.layout.fragment_poll_edit_password, container, false);
         ((TextView) view.findViewById(R.id.question_TEXT)).setText(poll.getQuestion());
+        rememberPass = (CheckBox) view.findViewById(R.id.remember_password_check);
         passwordET = (EditText) view.findViewById(R.id.password_editText);
+        if (poll.getPassword() != null) {
+            passwordET.setText(poll.getPassword());
+            passwordET.setSelection(poll.getPassword().length());
+            rememberPass.setChecked(true);
+        }
         view.findViewById(R.id.poll_edit_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 password = passwordET.getText().toString();
-                submitChoice();
+                passwordET.setText("");
+                submitPassword();
+            }
+        });
+        passwordET.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
             }
         });
         return view;
@@ -98,13 +119,24 @@ public class PollEditPasswordFragment extends Fragment {
     }
 
     private void onPasswordAccepted() {
+        Boolean remember = rememberPass.isChecked();
         if (mListener != null)
-            mListener.onPasswordAccepted(password);
+            mListener.onPasswordAccepted(password, remember);
     }
 
-    private void submitChoice() {
+    private void submitPassword() {
         POSTAuthorize task = new POSTAuthorize();
         task.execute(authorizeUrl);
+        if (!rememberPass.isChecked()) {
+            PollDataSource pollDataSource = new PollDataSource(getActivity());
+            pollDataSource.open();
+            try {
+                poll.setPassword(null);
+                pollDataSource.updatePoll(poll);
+            } catch (SQLException e) {
+                System.out.println("error updating poll");
+            }
+        }
     }
 
     @Override
@@ -136,7 +168,7 @@ public class PollEditPasswordFragment extends Fragment {
     }
 
     public interface OnFragmentInteractionListener {
-        void onPasswordAccepted(String password);
+        void onPasswordAccepted(String password, boolean remember);
     }
 
     private class POSTAuthorize extends AsyncTask<String, Void, String> {

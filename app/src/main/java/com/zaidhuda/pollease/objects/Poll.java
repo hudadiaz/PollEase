@@ -8,7 +8,7 @@ import java.util.ArrayList;
  */
 public class Poll implements Serializable {
     private final int id;
-    private String question, password, url;
+    private String question, password = "", url;
     private ArrayList<Choice> choices;
 
 
@@ -30,7 +30,7 @@ public class Poll implements Serializable {
     }
 
     public String getPollName() {
-        return "Poll#" + getId();
+        return "Poll #" + getId();
     }
 
     public ArrayList<Choice> getChoices() {

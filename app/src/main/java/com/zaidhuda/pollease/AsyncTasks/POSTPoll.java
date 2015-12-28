@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.database.SQLException;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -58,7 +59,8 @@ public class POSTPoll extends AsyncTask<String, Void, String> {
         try {
             pollDataSource.createPoll(poll);
         } catch (SQLException e) {
-            System.out.println(e);
+//            System.out.println(e);
+            Log.d("DB", "Poll probably already in database, which is good.");
         }
         pollDataSource.close();
 
